@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">IWB Interview HW</string>
+    <!--Picture grid text -->
+    <string name="leave_me_alone">LEAVE ME ALONE</string>
+    <string name="breath_in">BREATH</string>
+    <string name="get_away">GET AWAY</string>
+    <string name="read_braille">READ BRAILLE</string>
+    <string name="play_with_blocks">PLAY WITH BLOCKS</string>
+    <string name="breath_out">BREATH</string>
 </resources>
