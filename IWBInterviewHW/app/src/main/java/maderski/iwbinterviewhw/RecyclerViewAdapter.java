@@ -1,10 +1,12 @@
 package maderski.iwbinterviewhw;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -52,9 +54,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mItemList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private static final String TAG = "RecyclerViewHolder";
-
+        
         private ImageView itemImage;
         private TextView itemText;
 

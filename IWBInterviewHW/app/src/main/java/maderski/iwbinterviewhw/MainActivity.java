@@ -53,13 +53,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        if(mToast != null){
-            mToast.cancel();
-        }
-
-        mToast = Toast.makeText(this, "Item number clicked: " + String.valueOf(clickedItemIndex), Toast.LENGTH_LONG);
-        mToast.show();
-
+//        if(mToast != null){
+//            mToast.cancel();
+//        }
+//
+//        mToast = Toast.makeText(this, "Item number clicked: " + String.valueOf(clickedItemIndex), Toast.LENGTH_LONG);
+//        mToast.show();
         String itemText = mItemList.get(clickedItemIndex).getText();
         mTextToSpeechHelper.speakText(itemText);
     }
