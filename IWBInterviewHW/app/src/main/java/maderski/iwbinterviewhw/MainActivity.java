@@ -3,7 +3,6 @@ package maderski.iwbinterviewhw;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemClickListener{
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemTouchListener {
 
     private Toast mToast;
     private List<ItemModel> mItemList;
@@ -58,19 +57,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-//        if(mToast != null){
-//            mToast.cancel();
-//        }
-//
-//        mToast = Toast.makeText(this, "Item number clicked: " + String.valueOf(clickedItemIndex), Toast.LENGTH_LONG);
-//        mToast.show();
-
+    public void onListItemPressed(int clickedItemIndex) {
         View view = mRecyclerView.getChildAt(clickedItemIndex);
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
         linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.orange));
 
         String itemText = mItemList.get(clickedItemIndex).getString(this);
         mTextToSpeechHelper.speakText(itemText);
+    }
+
+    @Override
+    public void onListItemReleased(int clickedItemIndex) {
+        View view = mRecyclerView.getChildAt(clickedItemIndex);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
+        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
     }
 }

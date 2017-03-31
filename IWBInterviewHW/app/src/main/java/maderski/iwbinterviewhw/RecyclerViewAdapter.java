@@ -1,12 +1,12 @@
 package maderski.iwbinterviewhw;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,16 +19,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private static final String TAG = "RecyclerViewAdapter";
 
-    private final ListItemClickListener mOnClickListener;
+    private final ListItemTouchListener mOnTouchListener;
 
-    public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
+    public interface ListItemTouchListener {
+        void onListItemPressed(int clickedItemIndex);
+        void onListItemReleased(int clickedItemIndex);
     }
 
     private List<ItemModel> mItemList;
 
-    public RecyclerViewAdapter(List<ItemModel> itemList, ListItemClickListener listener){
-        mOnClickListener = listener;
+    public RecyclerViewAdapter(List<ItemModel> itemList, ListItemTouchListener listener){
+        mOnTouchListener = listener;
         mItemList = itemList;
     }
 
@@ -54,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mItemList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
         private static final String TAG = "RecyclerViewHolder";
         
         private ImageView itemImage;
@@ -64,13 +65,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemView);
             itemImage = (ImageView) itemView.findViewById(R.id.iv_item_image);
             itemText = (TextView) itemView.findViewById(R.id.tv_item_text);
-            itemView.setOnClickListener(this);
+            itemView.setOnTouchListener(this);
         }
 
         @Override
-        public void onClick(View view) {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
             int onClickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(onClickedPosition);
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                Log.i(TAG, "PRESSED!");
+                mOnTouchListener.onListItemPressed(onClickedPosition);
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                Log.i(TAG, "RELEASED!");
+                mOnTouchListener.onListItemReleased(onClickedPosition);
+            }
+            return true;
         }
     }
 }
