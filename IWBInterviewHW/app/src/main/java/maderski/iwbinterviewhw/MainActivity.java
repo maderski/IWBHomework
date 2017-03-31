@@ -1,11 +1,15 @@
 package maderski.iwbinterviewhw;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -16,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private Toast mToast;
     private List<ItemModel> mItemList;
     private TextToSpeechHelper mTextToSpeechHelper;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +35,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
 
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList, this);
 
-        recyclerView.setAdapter(recyclerViewAdapter);
+        mRecyclerView.setAdapter(recyclerViewAdapter);
 
     }
 
@@ -60,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 //
 //        mToast = Toast.makeText(this, "Item number clicked: " + String.valueOf(clickedItemIndex), Toast.LENGTH_LONG);
 //        mToast.show();
+
+        View view = mRecyclerView.getChildAt(clickedItemIndex);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
+        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.orange));
+
         String itemText = mItemList.get(clickedItemIndex).getString(this);
         mTextToSpeechHelper.speakText(itemText);
     }
