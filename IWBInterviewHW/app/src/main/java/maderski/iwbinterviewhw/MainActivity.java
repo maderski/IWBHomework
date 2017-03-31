@@ -13,6 +13,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemClickListener{
 
     private Toast mToast;
+    private List<ItemModel> mItemList;
+    private TextToSpeechHelper mTextToSpeechHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +24,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
+        mTextToSpeechHelper = new TextToSpeechHelper(this, 0.7f);
+        mItemList = getItemList();
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getItemList(), this);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList, this);
 
         recyclerView.setAdapter(recyclerViewAdapter);
 
@@ -55,5 +60,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         mToast = Toast.makeText(this, "Item number clicked: " + String.valueOf(clickedItemIndex), Toast.LENGTH_LONG);
         mToast.show();
 
+        String itemText = mItemList.get(clickedItemIndex).getText();
+        mTextToSpeechHelper.speakText(itemText);
     }
 }
