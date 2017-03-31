@@ -45,8 +45,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.itemImage.setImageResource(mItemList.get(position).getDrawable());
-        holder.itemText.setText(mItemList.get(position).getText());
+        holder.itemImage.setImageResource(mItemList.get(position).getDrawableResource());
+        holder.itemText.setText(mItemList.get(position).getString(holder.itemText.getContext()));
     }
 
     @Override

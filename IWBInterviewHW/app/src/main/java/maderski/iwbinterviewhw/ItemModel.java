@@ -1,24 +1,35 @@
 package maderski.iwbinterviewhw;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Jason on 3/30/17.
  */
 
 public class ItemModel {
 
-    private String mText;
-    private int mDrawable;
+    private int mStringResource;
+    private int mDrawableResource;
 
-    public ItemModel(String text, int drawable){
-        mText = text;
-        mDrawable = drawable;
+    public ItemModel(int stringResource, int drawableResource){
+        mStringResource = stringResource;
+        mDrawableResource = drawableResource;
     }
 
-    public String getText(){
-        return mText;
+    public int getStringResource(){
+        return mStringResource;
     }
 
-    public int getDrawable(){
-        return mDrawable;
+    public String getString(Context context){
+        return context.getString(mStringResource);
+    }
+
+    public int getDrawableResource(){
+        return mDrawableResource;
+    }
+
+    public Drawable getDrawable(Context context){
+        return context.getDrawable(mDrawableResource);
     }
 }
