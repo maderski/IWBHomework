@@ -1,16 +1,19 @@
 package maderski.iwbinterviewhw;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
  * Created by Jason on 3/30/17.
  */
 
-public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
+public class TextToSpeechHelper extends UtteranceProgressListener implements TextToSpeech.OnInitListener {
     private static final String TAG = "TextToSpeechHelper";
 
     private TextToSpeech mTextToSpeech;
@@ -18,6 +21,7 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
     public TextToSpeechHelper(Context context, float speechRate){
         mTextToSpeech = new TextToSpeech(context, this);
         mTextToSpeech.setSpeechRate(speechRate);
+        mTextToSpeech.setOnUtteranceProgressListener(this);
     }
 
     @Override
@@ -34,6 +38,23 @@ public class TextToSpeechHelper implements TextToSpeech.OnInitListener {
     }
 
     public void speakText(CharSequence text){
-        mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        Bundle params = new Bundle();
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "");
+        mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, params, "UniqueID");
+    }
+
+    @Override
+    public void onStart(String s) {
+
+    }
+
+    @Override
+    public void onDone(String s) {
+        Log.d(TAG, "DONE");
+    }
+
+    @Override
+    public void onError(String s) {
+
     }
 }

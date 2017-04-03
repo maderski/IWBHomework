@@ -22,8 +22,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private final ListItemTouchListener mOnTouchListener;
 
     public interface ListItemTouchListener {
-        void onListItemPressed(int clickedItemIndex);
+        void onListItemPressed(int clickedItemIndex, float pressure, double areaOfEllipse);
         void onListItemReleased(int clickedItemIndex);
+        void onListItemCancel();
     }
 
     private List<ItemModel> mItemList;
@@ -68,16 +69,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnTouchListener(this);
         }
 
+
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
+            int actionIndex = motionEvent.getActionIndex();
+            int pointerId = motionEvent.getPointerId(actionIndex);
+            int action = motionEvent.getActionMasked();
             int onClickedPosition = getAdapterPosition();
-            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                Log.i(TAG, "PRESSED!");
-                mOnTouchListener.onListItemPressed(onClickedPosition);
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                Log.i(TAG, "RELEASED!");
-                mOnTouchListener.onListItemReleased(onClickedPosition);
-            }
+            int pointerCount = motionEvent.getPointerCount();
+            Double areaOfEllipse = Math.PI * motionEvent.getTouchMajor() * motionEvent.getTouchMinor();
+            switch(action) {
+                case MotionEvent.ACTION_DOWN:
+                    Log.d(TAG, "pointer count: " + String.valueOf(pointerCount));
+                    Log.d(TAG, "DOWN POINTER ID: " + String.valueOf(pointerId));
+                    Log.d(TAG, "DOWN");
+                    mOnTouchListener.onListItemPressed(onClickedPosition, motionEvent.getPressure(), areaOfEllipse);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    Log.d(TAG, "UP POINTER ID: " + String.valueOf(pointerId));
+                    Log.d(TAG, "UP");
+                    mOnTouchListener.onListItemReleased(onClickedPosition);
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    mOnTouchListener.onListItemCancel();
+                    break;
+                }
             return true;
         }
     }

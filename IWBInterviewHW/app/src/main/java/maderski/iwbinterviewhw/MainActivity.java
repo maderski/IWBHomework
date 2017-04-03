@@ -1,10 +1,12 @@
 package maderski.iwbinterviewhw;
 
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,10 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemTouchListener {
+    private static final String TAG = "MainActivity";
 
     private Toast mToast;
     private List<ItemModel> mItemList;
     private TextToSpeechHelper mTextToSpeechHelper;
+    private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;
 
     @Override
@@ -29,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        mTextToSpeechHelper = new TextToSpeechHelper(this, 0.7f);
         mItemList = getItemList();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
@@ -42,6 +45,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         mRecyclerView.setAdapter(recyclerViewAdapter);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTextToSpeechHelper = new TextToSpeechHelper(this, 0.8f);
+        mTouchEventsHelper = new TouchEventsHelper();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mTextToSpeechHelper = null;
+        mTouchEventsHelper = null;
     }
 
     private List<ItemModel> getItemList(){
@@ -57,19 +74,69 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     @Override
-    public void onListItemPressed(int clickedItemIndex) {
+    public void onListItemPressed(int clickedItemIndex, float pressure, double areaOfEllipse) {
+        mTouchEventsHelper.addTouchEvent(clickedItemIndex, pressure, areaOfEllipse);
+        doSomething = true;
+
         View view = mRecyclerView.getChildAt(clickedItemIndex);
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
-        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.orange));
+        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.lightOrange));
 
-        String itemText = mItemList.get(clickedItemIndex).getString(this);
-        mTextToSpeechHelper.speakText(itemText);
+//        String itemText = mItemList.get(clickedItemIndex).getString(this);
+//        mTextToSpeechHelper.speakText(itemText);
+    }
+    int lastPosition;
+    boolean doSomething = true;
+    @Override
+    public void onListItemReleased(int clickedItemIndex) {
+        Log.d(TAG, "Item RELEASED");
+        speakOut(doSomething);
+
+//        View view = mRecyclerView.getChildAt(clickedItemIndex);
+//        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
+//        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
     }
 
     @Override
-    public void onListItemReleased(int clickedItemIndex) {
-        View view = mRecyclerView.getChildAt(clickedItemIndex);
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
-        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+    public void onListItemCancel() {
+        doSomething = true;
+        speakOut(doSomething);
+        mTouchEventsHelper.removeAllTouchEvents();
+        Log.d(TAG, "CANCELLED");
+    }
+
+    public void speakOut(boolean canSpeak){
+        if(canSpeak){
+            doSomething = false;
+            int position;
+            List<Integer> largestAreaPositions = mTouchEventsHelper.getOnClickPositions(mTouchEventsHelper.getLargestArea());
+            if(largestAreaPositions.size() == 1){
+                position = largestAreaPositions.get(0);
+            } else if(!largestAreaPositions.isEmpty()){
+                for(int p : largestAreaPositions){
+                    Log.d(TAG, "LARGEST AREA POSITIONS: " + String.valueOf(p));
+                }
+                position = mTouchEventsHelper.getOnClickPosition(mTouchEventsHelper.getLargestPressure());
+            } else {
+                position = lastPosition;
+            }
+
+            Log.d(TAG, "POSITION CHOOSEN: " + String.valueOf(position));
+            lastPosition = position;
+
+            View view = mRecyclerView.getChildAt(position);
+            LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
+            linearLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+
+            String itemText = mItemList.get(position).getString(this);
+            mTextToSpeechHelper.speakText(itemText);
+
+            for(int clickedPosition : mTouchEventsHelper.getAllOnClickPositions()) {
+                view = mRecyclerView.getChildAt(clickedPosition);
+                linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
+                linearLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+            }
+            mTouchEventsHelper.removeAllTouchEvents();
+        }
     }
 }
