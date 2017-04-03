@@ -16,12 +16,23 @@ import java.util.Locale;
 public class TextToSpeechHelper extends UtteranceProgressListener implements TextToSpeech.OnInitListener {
     private static final String TAG = "TextToSpeechHelper";
 
+   public interface TextToSpeechCallback {
+       void doneSpeaking(String s);
+       void startSpeaking(String s);
+   }
+
     private TextToSpeech mTextToSpeech;
+    private TextToSpeechCallback mCallback;
 
     public TextToSpeechHelper(Context context, float speechRate){
         mTextToSpeech = new TextToSpeech(context, this);
         mTextToSpeech.setSpeechRate(speechRate);
         mTextToSpeech.setOnUtteranceProgressListener(this);
+    }
+
+    public TextToSpeechHelper(Context context, float speechRate, TextToSpeechCallback callback){
+        this(context, speechRate);
+        mCallback = callback;
     }
 
     @Override
@@ -43,14 +54,24 @@ public class TextToSpeechHelper extends UtteranceProgressListener implements Tex
         mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, params, "UniqueID");
     }
 
+    public void shutdownTextToSpeech(){
+        mTextToSpeech.shutdown();
+    }
+
     @Override
     public void onStart(String s) {
-
+        Log.d(TAG, "START SPEAKING");
+        if(mCallback != null){
+            mCallback.startSpeaking(s);
+        }
     }
 
     @Override
     public void onDone(String s) {
-        Log.d(TAG, "DONE");
+        Log.d(TAG, "DONE SPEAKING");
+        if(mCallback != null){
+            mCallback.doneSpeaking(s);
+        }
     }
 
     @Override

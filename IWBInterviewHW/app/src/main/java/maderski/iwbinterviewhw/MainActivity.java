@@ -1,6 +1,5 @@
 package maderski.iwbinterviewhw;
 
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +15,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemTouchListener {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemTouchListener,
+        TextToSpeechHelper.TextToSpeechCallback{
     private static final String TAG = "MainActivity";
 
     private Toast mToast;
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;
+    private TextToSpeechHelper.TextToSpeechCallback mTextToSpeechCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        mTextToSpeechCallback = this;
 
         mItemList = getItemList();
 
@@ -50,15 +53,26 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     protected void onResume() {
         super.onResume();
-        mTextToSpeechHelper = new TextToSpeechHelper(this, 0.8f);
-        mTouchEventsHelper = new TouchEventsHelper();
+        if(mTextToSpeechHelper == null) {
+            mTextToSpeechHelper = new TextToSpeechHelper(this, 0.8f, this);
+        }
+
+        if(mTouchEventsHelper == null) {
+            mTouchEventsHelper = new TouchEventsHelper();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mTextToSpeechHelper = null;
-        mTouchEventsHelper = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mTextToSpeechHelper != null){
+            mTextToSpeechHelper.shutdownTextToSpeech();
+        }
     }
 
     private List<ItemModel> getItemList(){
@@ -76,38 +90,28 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     public void onListItemPressed(int clickedItemIndex, float pressure, double areaOfEllipse) {
         mTouchEventsHelper.addTouchEvent(clickedItemIndex, pressure, areaOfEllipse);
-        doSomething = true;
+        canPerformActions = true;
 
-        View view = mRecyclerView.getChildAt(clickedItemIndex);
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
-        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.lightOrange));
-
-//        String itemText = mItemList.get(clickedItemIndex).getString(this);
-//        mTextToSpeechHelper.speakText(itemText);
+        CardViewColorUtils.setCardColor(this, mRecyclerView, clickedItemIndex, R.color.lightOrange);
     }
-    int lastPosition;
-    boolean doSomething = true;
+    int mPosition;
+    boolean canPerformActions = true;
     @Override
     public void onListItemReleased(int clickedItemIndex) {
         Log.d(TAG, "Item RELEASED");
-        speakOut(doSomething);
-
-//        View view = mRecyclerView.getChildAt(clickedItemIndex);
-//        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
-//        linearLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+        speakOut(canPerformActions);
     }
 
     @Override
     public void onListItemCancel() {
-        doSomething = true;
-        speakOut(doSomething);
-        mTouchEventsHelper.removeAllTouchEvents();
+        canPerformActions = true;
+        speakOut(canPerformActions);
         Log.d(TAG, "CANCELLED");
     }
 
     public void speakOut(boolean canSpeak){
         if(canSpeak){
-            doSomething = false;
+            canPerformActions = false;
             int position;
             List<Integer> largestAreaPositions = mTouchEventsHelper.getOnClickPositions(mTouchEventsHelper.getLargestArea());
             if(largestAreaPositions.size() == 1){
@@ -118,25 +122,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 }
                 position = mTouchEventsHelper.getOnClickPosition(mTouchEventsHelper.getLargestPressure());
             } else {
-                position = lastPosition;
+                position = mPosition;
             }
 
             Log.d(TAG, "POSITION CHOOSEN: " + String.valueOf(position));
-            lastPosition = position;
-
-            View view = mRecyclerView.getChildAt(position);
-            LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
-            linearLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+            mPosition = position;
 
             String itemText = mItemList.get(position).getString(this);
             mTextToSpeechHelper.speakText(itemText);
-
-            for(int clickedPosition : mTouchEventsHelper.getAllOnClickPositions()) {
-                view = mRecyclerView.getChildAt(clickedPosition);
-                linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
-                linearLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-            }
-            mTouchEventsHelper.removeAllTouchEvents();
         }
+    }
+
+    @Override
+    public void doneSpeaking(String s) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                List<Integer> allPositionsList = mTouchEventsHelper.getAllOnClickPositions();
+                if(allPositionsList.isEmpty()){
+                    CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, mPosition, R.color.white);
+                }else {
+                    for (int clickedPosition : allPositionsList) {
+                        Log.d(TAG, "Turn White: " + String.valueOf(clickedPosition));
+                        CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, clickedPosition, R.color.white);
+                    }
+                    mTouchEventsHelper.removeAllTouchEvents();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void startSpeaking(String s) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, mPosition, R.color.orange);
+            }
+        });
     }
 }

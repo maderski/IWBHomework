@@ -78,6 +78,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             int onClickedPosition = getAdapterPosition();
             int pointerCount = motionEvent.getPointerCount();
             Double areaOfEllipse = Math.PI * motionEvent.getTouchMajor() * motionEvent.getTouchMinor();
+
             switch(action) {
                 case MotionEvent.ACTION_DOWN:
                     Log.d(TAG, "pointer count: " + String.valueOf(pointerCount));
