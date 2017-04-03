@@ -1,16 +1,16 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.Models;
 
 /**
  * Created by Jason on 4/1/17.
  */
 
-public class TouchEventObject {
+public class TouchEventModel {
 
     private int mOnClickedPosition;
     private float mPressure;
     private double mArea;
 
-    public TouchEventObject(int onClickedPosition, float pressure, double area) {
+    public TouchEventModel(int onClickedPosition, float pressure, double area) {
         mOnClickedPosition = onClickedPosition;
         mPressure = pressure;
         mArea = area;

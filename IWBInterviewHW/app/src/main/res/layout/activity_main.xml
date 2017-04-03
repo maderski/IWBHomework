@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context="maderski.iwbinterviewhw.MainActivity">
+    tools:context="maderski.iwbinterviewhw.UI.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
-        tools:context=".MainActivity">
+        tools:context=".UI.MainActivity">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.Helper;
 
 import android.content.Context;
 import android.os.Bundle;

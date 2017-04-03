@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.UI;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +10,15 @@ import android.view.WindowManager;
 
 import java.util.List;
 
+import maderski.iwbinterviewhw.Models.ItemModel;
+import maderski.iwbinterviewhw.R;
+import maderski.iwbinterviewhw.Helper.TextToSpeechHelper;
+import maderski.iwbinterviewhw.Helper.TouchEventsHelper;
+import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
+import maderski.iwbinterviewhw.Utils.ItemListUtils;
+
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemTouchListener,
-        TextToSpeechHelper.TextToSpeechCallback{
+        TextToSpeechHelper.TextToSpeechCallback {
     private static final String TAG = "MainActivity";
 
     private List<ItemModel> mItemList;

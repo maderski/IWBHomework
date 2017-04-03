@@ -1,7 +1,10 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import maderski.iwbinterviewhw.Models.ItemModel;
+import maderski.iwbinterviewhw.R;
 
 /**
  * Created by Jason on 4/3/17.

@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.UI;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+
+import maderski.iwbinterviewhw.Models.ItemModel;
+import maderski.iwbinterviewhw.R;
 
 /**
  * Created by Jason on 3/30/17.

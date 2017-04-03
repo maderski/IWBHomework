@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.Helper;
 
 import android.util.Log;
 
@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import maderski.iwbinterviewhw.Models.TouchEventModel;
+
 /**
  * Created by Jason on 4/2/17.
  */
@@ -14,13 +16,13 @@ import java.util.Set;
 public class TouchEventsHelper {
     private static final String TAG = "OnTouchHelper";
 
-    private List<TouchEventObject> mTouchEventObjects = new ArrayList<>();
+    private List<TouchEventModel> mTouchEventModels = new ArrayList<>();
 
     public TouchEventsHelper(){}
 
     public void addTouchEvent(int onClickedPosition, float pressure, double area){
-        TouchEventObject touchEventObject = new TouchEventObject(onClickedPosition, pressure, area);
-        mTouchEventObjects.add(touchEventObject);
+        TouchEventModel touchEventModel = new TouchEventModel(onClickedPosition, pressure, area);
+        mTouchEventModels.add(touchEventModel);
         Log.d(TAG, "ADDED: "
             + " Position: " + String.valueOf(onClickedPosition)
             + " Pressure: " + String.valueOf(pressure)
@@ -28,10 +30,10 @@ public class TouchEventsHelper {
     }
 
     public void removeTouchEvents(int onClickedPosition){
-        for(TouchEventObject touchEventObject : mTouchEventObjects){
-            if(touchEventObject.getOnClickedPosition() == onClickedPosition){
-                int index = mTouchEventObjects.indexOf(touchEventObject);
-                mTouchEventObjects.remove(index);
+        for(TouchEventModel touchEventModel : mTouchEventModels){
+            if(touchEventModel.getOnClickedPosition() == onClickedPosition){
+                int index = mTouchEventModels.indexOf(touchEventModel);
+                mTouchEventModels.remove(index);
                 Log.d(TAG, "REMOVED onClickedPosition: " + String.valueOf(onClickedPosition)
                     + " at index: " + String.valueOf(index));
             }
@@ -39,10 +41,10 @@ public class TouchEventsHelper {
     }
 
     public void removeTouchEvents(float pressure){
-        for(TouchEventObject touchEventObject : mTouchEventObjects){
-            if(touchEventObject.getPressure() == pressure){
-                int index = mTouchEventObjects.indexOf(touchEventObject);
-                mTouchEventObjects.remove(index);
+        for(TouchEventModel touchEventModel : mTouchEventModels){
+            if(touchEventModel.getPressure() == pressure){
+                int index = mTouchEventModels.indexOf(touchEventModel);
+                mTouchEventModels.remove(index);
                 Log.d(TAG, "REMOVED pressure: " + String.valueOf(pressure)
                         + " at index: " + String.valueOf(index));
             }
@@ -50,10 +52,10 @@ public class TouchEventsHelper {
     }
 
     public void removeTouchEvents(double area){
-        for(TouchEventObject touchEventObject : mTouchEventObjects){
-            if(touchEventObject.getArea() == area){
-                int index = mTouchEventObjects.indexOf(touchEventObject);
-                mTouchEventObjects.remove(index);
+        for(TouchEventModel touchEventModel : mTouchEventModels){
+            if(touchEventModel.getArea() == area){
+                int index = mTouchEventModels.indexOf(touchEventModel);
+                mTouchEventModels.remove(index);
                 Log.d(TAG, "REMOVED area: " + String.valueOf(area)
                         + " at index: " + String.valueOf(index));
             }
@@ -61,14 +63,14 @@ public class TouchEventsHelper {
     }
 
     public boolean removeAllTouchEvents(){
-        mTouchEventObjects.clear();
-        return mTouchEventObjects.isEmpty();
+        mTouchEventModels.clear();
+        return mTouchEventModels.isEmpty();
     }
 
     public double getLargestArea(){
         double maxArea = 0.0;
-        for(TouchEventObject touchEventObject : mTouchEventObjects) {
-            double area = touchEventObject.getArea();
+        for(TouchEventModel touchEventModel : mTouchEventModels) {
+            double area = touchEventModel.getArea();
             if(area > maxArea){
                 maxArea = area;
             }
@@ -78,8 +80,8 @@ public class TouchEventsHelper {
 
     public float getLargestPressure(){
         float maxPressure = 0.0f;
-        for(TouchEventObject touchEventObject : mTouchEventObjects) {
-            float pressure = touchEventObject.getPressure();
+        for(TouchEventModel touchEventModel : mTouchEventModels) {
+            float pressure = touchEventModel.getPressure();
             if(pressure > maxPressure){
                 maxPressure = pressure;
             }
@@ -89,18 +91,18 @@ public class TouchEventsHelper {
 
     public List<Integer> getAllOnClickPositions(){
         Set<Integer> positions = new HashSet<>();
-        for(int i = 0; i < mTouchEventObjects.size(); i++){
-            positions.add(mTouchEventObjects.get(i).getOnClickedPosition());
+        for(int i = 0; i < mTouchEventModels.size(); i++){
+            positions.add(mTouchEventModels.get(i).getOnClickedPosition());
         }
         return new ArrayList<>(positions);
     }
 
     public List<Integer> getOnClickPositions(double largestArea){
         Set<Integer> positions = new HashSet<>();
-        for(TouchEventObject touchEventObject : mTouchEventObjects) {
-            double touchEventArea = touchEventObject.getArea();
+        for(TouchEventModel touchEventModel : mTouchEventModels) {
+            double touchEventArea = touchEventModel.getArea();
             if(touchEventArea == largestArea){
-                positions.add(touchEventObject.getOnClickedPosition());
+                positions.add(touchEventModel.getOnClickedPosition());
             }
         }
         return new ArrayList<>(positions);
@@ -108,10 +110,10 @@ public class TouchEventsHelper {
 
     public int getOnClickPosition(float largestPressure){
         int position = -1;
-        for(TouchEventObject touchEventObject : mTouchEventObjects) {
-            float touchEventPressure = touchEventObject.getPressure();
+        for(TouchEventModel touchEventModel : mTouchEventModels) {
+            float touchEventPressure = touchEventModel.getPressure();
             if(touchEventPressure == largestPressure){
-                position = touchEventObject.getOnClickedPosition();
+                position = touchEventModel.getOnClickedPosition();
             }
         }
         Log.d(TAG, "USED PRESSURE");
