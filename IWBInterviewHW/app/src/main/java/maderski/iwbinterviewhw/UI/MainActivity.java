@@ -12,8 +12,8 @@ import java.util.List;
 
 import maderski.iwbinterviewhw.Models.ItemModel;
 import maderski.iwbinterviewhw.R;
-import maderski.iwbinterviewhw.Helper.TextToSpeechHelper;
-import maderski.iwbinterviewhw.Helper.TouchEventsHelper;
+import maderski.iwbinterviewhw.Helpers.TextToSpeechHelper;
+import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
 import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
 import maderski.iwbinterviewhw.Utils.ItemListUtils;
 

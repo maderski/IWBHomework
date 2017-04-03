@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.Helper;
+package maderski.iwbinterviewhw.Helpers;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
-import java.util.HashMap;
 import java.util.Locale;
 
 /**

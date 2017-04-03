@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.Helper;
+package maderski.iwbinterviewhw.Helpers;
 
 import android.util.Log;
 
