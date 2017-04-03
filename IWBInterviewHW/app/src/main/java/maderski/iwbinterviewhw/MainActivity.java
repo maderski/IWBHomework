@@ -7,20 +7,20 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemTouchListener,
         TextToSpeechHelper.TextToSpeechCallback{
     private static final String TAG = "MainActivity";
 
-    private Toast mToast;
     private List<ItemModel> mItemList;
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;
+
+    private int mPosition;
+    private boolean canPerformActions = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        mItemList = getItemList();
+        mItemList = ItemListUtils.getItemList();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
 
@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList, this);
 
         mRecyclerView.setAdapter(recyclerViewAdapter);
-
     }
 
     @Override
@@ -69,18 +68,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
     }
 
-    private List<ItemModel> getItemList(){
-        List<ItemModel> itemList = new ArrayList<>();
-        itemList.add(new ItemModel(R.string.leave_me_alone, R.drawable.bother));
-        itemList.add(new ItemModel(R.string.breath_out, R.drawable.blow));
-        itemList.add(new ItemModel(R.string.get_away, R.drawable.boo));
-        itemList.add(new ItemModel(R.string.read_braille, R.drawable.braille_read));
-        itemList.add(new ItemModel(R.string.play_with_blocks, R.drawable.build_blocks));
-        itemList.add(new ItemModel(R.string.breath_out, R.drawable.breathe));
-
-        return itemList;
-    }
-
     @Override
     public void onListItemPressed(int clickedItemIndex, float pressure, double areaOfEllipse) {
         mTouchEventsHelper.addTouchEvent(clickedItemIndex, pressure, areaOfEllipse);
@@ -88,8 +75,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         CardViewColorUtils.setCardColor(this, mRecyclerView, clickedItemIndex, R.color.lightOrange);
     }
-    int mPosition;
-    boolean canPerformActions = true;
+
     @Override
     public void onListItemReleased(int clickedItemIndex) {
         Log.d(TAG, "Item RELEASED");
@@ -113,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     public int findPosition(){
-        int position;
+        int position = mPosition;
         List<Integer> largestAreaPositions = mTouchEventsHelper.getOnClickPositions(mTouchEventsHelper.getLargestArea());
         if(largestAreaPositions.size() == 1){
             position = largestAreaPositions.get(0);
@@ -122,10 +108,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 Log.d(TAG, "LARGEST AREA POSITIONS: " + String.valueOf(p));
             }
             position = mTouchEventsHelper.getOnClickPosition(mTouchEventsHelper.getLargestPressure());
-        } else {
-            position = mPosition;
         }
-
         Log.d(TAG, "POSITION CHOOSEN: " + String.valueOf(position));
         mPosition = position;
         return position;
