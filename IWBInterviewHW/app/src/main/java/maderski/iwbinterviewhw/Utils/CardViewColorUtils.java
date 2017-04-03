@@ -3,7 +3,6 @@ package maderski.iwbinterviewhw.Utils;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import maderski.iwbinterviewhw.R;
@@ -15,8 +14,8 @@ import maderski.iwbinterviewhw.R;
 public class CardViewColorUtils {
 
     public static void setCardColor(Context context, RecyclerView recyclerView, int cardPosition, int color){
-        View view = recyclerView.getChildAt(cardPosition);
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.ll_list_item_layout);
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(cardPosition);
+        LinearLayout linearLayout = (LinearLayout) viewHolder.itemView.findViewById(R.id.ll_list_item_layout);
         linearLayout.setBackgroundColor(ContextCompat.getColor(context, color));
     }
 }
