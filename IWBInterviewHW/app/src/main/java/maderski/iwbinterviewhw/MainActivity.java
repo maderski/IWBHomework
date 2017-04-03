@@ -1,15 +1,12 @@
 package maderski.iwbinterviewhw;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,7 +21,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;
-    private TextToSpeechHelper.TextToSpeechCallback mTextToSpeechCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +29,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-
-        mTextToSpeechCallback = this;
 
         mItemList = getItemList();
 
@@ -112,25 +106,29 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public void speakOut(boolean canSpeak){
         if(canSpeak){
             canPerformActions = false;
-            int position;
-            List<Integer> largestAreaPositions = mTouchEventsHelper.getOnClickPositions(mTouchEventsHelper.getLargestArea());
-            if(largestAreaPositions.size() == 1){
-                position = largestAreaPositions.get(0);
-            } else if(!largestAreaPositions.isEmpty()){
-                for(int p : largestAreaPositions){
-                    Log.d(TAG, "LARGEST AREA POSITIONS: " + String.valueOf(p));
-                }
-                position = mTouchEventsHelper.getOnClickPosition(mTouchEventsHelper.getLargestPressure());
-            } else {
-                position = mPosition;
-            }
-
-            Log.d(TAG, "POSITION CHOOSEN: " + String.valueOf(position));
-            mPosition = position;
-
-            String itemText = mItemList.get(position).getString(this);
+            findPosition();
+            String itemText = mItemList.get(mPosition).getString(this);
             mTextToSpeechHelper.speakText(itemText);
         }
+    }
+
+    public int findPosition(){
+        int position;
+        List<Integer> largestAreaPositions = mTouchEventsHelper.getOnClickPositions(mTouchEventsHelper.getLargestArea());
+        if(largestAreaPositions.size() == 1){
+            position = largestAreaPositions.get(0);
+        } else if(!largestAreaPositions.isEmpty()){
+            for(int p : largestAreaPositions){
+                Log.d(TAG, "LARGEST AREA POSITIONS: " + String.valueOf(p));
+            }
+            position = mTouchEventsHelper.getOnClickPosition(mTouchEventsHelper.getLargestPressure());
+        } else {
+            position = mPosition;
+        }
+
+        Log.d(TAG, "POSITION CHOOSEN: " + String.valueOf(position));
+        mPosition = position;
+        return position;
     }
 
     @Override
