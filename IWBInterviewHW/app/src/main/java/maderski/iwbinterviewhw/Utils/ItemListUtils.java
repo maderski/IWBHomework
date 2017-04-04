@@ -11,6 +11,7 @@ import maderski.iwbinterviewhw.R;
  */
 
 public class ItemListUtils {
+    // Get list of Image and Text resources
     public static List<ItemModel> getItemList(){
         List<ItemModel> itemList = new ArrayList<>();
         itemList.add(new ItemModel(R.string.leave_me_alone, R.drawable.bother));

@@ -34,6 +34,7 @@ public class TextToSpeechHelper extends UtteranceProgressListener implements Tex
         mCallback = callback;
     }
 
+    // Called on TTS initialization
     @Override
     public void onInit(int status) {
         if(status == TextToSpeech.SUCCESS){
@@ -47,16 +48,19 @@ public class TextToSpeechHelper extends UtteranceProgressListener implements Tex
         }
     }
 
+    // Speak the specified text
     public void speakText(CharSequence text){
         Bundle params = new Bundle();
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "");
         mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, params, "UniqueID");
     }
 
+    // Releases TTS resources
     public void shutdownTextToSpeech(){
         mTextToSpeech.shutdown();
     }
 
+    // Called when TTS starts speaking
     @Override
     public void onStart(String s) {
         Log.d(TAG, "START SPEAKING");
@@ -65,6 +69,7 @@ public class TextToSpeechHelper extends UtteranceProgressListener implements Tex
         }
     }
 
+    // Called when TTS is done speaking
     @Override
     public void onDone(String s) {
         Log.d(TAG, "DONE SPEAKING");
@@ -73,6 +78,7 @@ public class TextToSpeechHelper extends UtteranceProgressListener implements Tex
         }
     }
 
+    // Called when TTS has an error
     @Override
     public void onError(String s) {
         Log.d(TAG, "SPEAKING ERROR");

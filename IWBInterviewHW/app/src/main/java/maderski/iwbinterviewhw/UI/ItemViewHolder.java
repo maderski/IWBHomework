@@ -35,6 +35,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnTo
         itemView.setOnTouchListener(this);
     }
 
+    // Scales image size based on display resolution
     private void setImageSize(View itemView){
         float density  = itemView.getResources().getDisplayMetrics().density;
         float dpWidth  = itemView.getResources().getDisplayMetrics().widthPixels/density;
@@ -54,15 +55,18 @@ public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnTo
                 + "\nHeight: " + String.valueOf(height));
     }
 
+    // Sets the OnTouchListener
     public void setOnTouchListener(ListItemTouchListener onTouchListener){
         mOnTouchListener = onTouchListener;
     }
 
+    // Sets the image for the ImageView and text for the TextView
     public void bindTo(int imageResource, int stringResource){
         mItemImage.setImageResource(imageResource);
         mItemText.setText(stringResource);
     }
 
+    // Captures touch events
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         int actionIndex = motionEvent.getActionIndex();

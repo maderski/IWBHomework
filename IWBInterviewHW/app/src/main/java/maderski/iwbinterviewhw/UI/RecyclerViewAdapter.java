@@ -26,6 +26,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         mOnTouchListener = listener;
     }
 
+    // Inflate view from layout, set OnTouchListener and create View Holder
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -38,6 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         return viewHolder;
     }
 
+    // Set the image and text for the View
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         holder.bindTo(mItemList.get(position).getDrawableResource(), mItemList.get(position).getStringResource());

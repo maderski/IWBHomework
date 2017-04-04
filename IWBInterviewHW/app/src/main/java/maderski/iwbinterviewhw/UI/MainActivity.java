@@ -83,20 +83,22 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
         }
     }
 
+    // When an item is touched, set the card background color to light orange, add the touch event to the touch event list
     @Override
     public void onListItemPressed(int clickedItemIndex, float pressure, double areaOfEllipse) {
+        CardViewColorUtils.setCardColor(this, mRecyclerView, clickedItemIndex, R.color.lightOrange);
         mTouchEventsHelper.addTouchEvent(clickedItemIndex, pressure, areaOfEllipse);
         canPerformActions = true;
-
-        CardViewColorUtils.setCardColor(this, mRecyclerView, clickedItemIndex, R.color.lightOrange);
     }
 
+    // When an item touch is released, speak out
     @Override
     public void onListItemReleased(int clickedItemIndex) {
         Log.d(TAG, "Item RELEASED");
         speakOut(canPerformActions);
     }
 
+    // When touch is cancelled, speak out
     @Override
     public void onListItemCancel() {
         canPerformActions = true;
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
         Log.d(TAG, "CANCELLED");
     }
 
+    // Find the position at which the user intended to touch and they speak out the text from the found position
     public void speakOut(boolean canSpeak){
         if(canSpeak){
             canPerformActions = false;
@@ -113,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
         }
     }
 
+    // Finds the position that the user intended by first looking for the largest area and picks
+    // the position that has the largest area touched.  If there are two or more areas that are
+    // equal, it will then choose the position based on the highest pressure.
     public int findPosition(){
         int position = mPosition;
         List<Integer> largestAreaPositions = mTouchEventsHelper.getOnClickPositions(mTouchEventsHelper.getLargestArea());
@@ -129,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
         return position;
     }
 
+    // When done speaking, set colored cards back to white and then remove all touch events
     @Override
     public void doneSpeaking(String s) {
         runOnUiThread(new Runnable() {
@@ -149,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
         });
     }
 
+    // When start speaking, change the card with the text being spoken to a darker orange color
     @Override
     public void startSpeaking(String s) {
         runOnUiThread(new Runnable() {

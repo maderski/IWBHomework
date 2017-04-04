@@ -13,6 +13,7 @@ import maderski.iwbinterviewhw.R;
 
 public class CardViewColorUtils {
 
+    // Set the layout background color that is nested in the Card View
     public static void setCardColor(Context context, RecyclerView recyclerView, int cardPosition, int color){
         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(cardPosition);
         if(viewHolder != null) {

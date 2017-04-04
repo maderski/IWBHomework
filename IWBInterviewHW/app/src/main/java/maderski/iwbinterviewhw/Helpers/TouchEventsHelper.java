@@ -20,6 +20,7 @@ public class TouchEventsHelper {
 
     public TouchEventsHelper(){}
 
+    // Add Touch Event to list
     public void addTouchEvent(int onClickedPosition, float pressure, double area){
         TouchEventModel touchEventModel = new TouchEventModel(onClickedPosition, pressure, area);
         mTouchEventModels.add(touchEventModel);
@@ -29,6 +30,7 @@ public class TouchEventsHelper {
             + " Area: " + String.valueOf(area));
     }
 
+    // Remove touch event from list at a specified onClickedPosition
     public void removeTouchEvents(int onClickedPosition){
         for(TouchEventModel touchEventModel : mTouchEventModels){
             if(touchEventModel.getOnClickedPosition() == onClickedPosition){
@@ -40,6 +42,7 @@ public class TouchEventsHelper {
         }
     }
 
+    // Remove touch event from list at a specified pressure
     public void removeTouchEvents(float pressure){
         for(TouchEventModel touchEventModel : mTouchEventModels){
             if(touchEventModel.getPressure() == pressure){
@@ -51,6 +54,7 @@ public class TouchEventsHelper {
         }
     }
 
+    // Remove touch event from list at a specified area
     public void removeTouchEvents(double area){
         for(TouchEventModel touchEventModel : mTouchEventModels){
             if(touchEventModel.getArea() == area){
@@ -62,11 +66,13 @@ public class TouchEventsHelper {
         }
     }
 
+    // Remove all touch events from list
     public boolean removeAllTouchEvents(){
         mTouchEventModels.clear();
         return mTouchEventModels.isEmpty();
     }
 
+    // Gets the largest area on the list
     public double getLargestArea(){
         double maxArea = 0.0;
         for(TouchEventModel touchEventModel : mTouchEventModels) {
@@ -78,6 +84,7 @@ public class TouchEventsHelper {
         return maxArea;
     }
 
+    // Gets the largest pressure on the list
     public float getLargestPressure(){
         float maxPressure = 0.0f;
         for(TouchEventModel touchEventModel : mTouchEventModels) {
@@ -89,6 +96,7 @@ public class TouchEventsHelper {
         return maxPressure;
     }
 
+    // Gets all OnClickPositions that is on the list
     public List<Integer> getAllOnClickPositions(){
         Set<Integer> positions = new HashSet<>();
         for(int i = 0; i < mTouchEventModels.size(); i++){
@@ -97,6 +105,7 @@ public class TouchEventsHelper {
         return new ArrayList<>(positions);
     }
 
+    // Gets all OnClickPositions with the largest areas
     public List<Integer> getOnClickPositions(double largestArea){
         Set<Integer> positions = new HashSet<>();
         for(TouchEventModel touchEventModel : mTouchEventModels) {
@@ -108,6 +117,7 @@ public class TouchEventsHelper {
         return new ArrayList<>(positions);
     }
 
+    // Gets OnClickPosition with the largest pressure
     public int getOnClickPosition(float largestPressure){
         int position = -1;
         for(TouchEventModel touchEventModel : mTouchEventModels) {
