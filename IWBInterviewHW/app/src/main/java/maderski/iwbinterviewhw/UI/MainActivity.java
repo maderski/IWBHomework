@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
     protected void onResume() {
         super.onResume();
         if(mTextToSpeechHelper == null) {
-            mTextToSpeechHelper = new TextToSpeechHelper(this, 0.8f, this);
+            mTextToSpeechHelper = new TextToSpeechHelper(this, 0.9f, this);
         }
 
         if(mTouchEventsHelper == null) {
