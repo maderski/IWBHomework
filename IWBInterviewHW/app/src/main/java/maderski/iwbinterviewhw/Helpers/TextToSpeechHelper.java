@@ -75,6 +75,6 @@ public class TextToSpeechHelper extends UtteranceProgressListener implements Tex
 
     @Override
     public void onError(String s) {
-
+        Log.d(TAG, "SPEAKING ERROR");
     }
 }

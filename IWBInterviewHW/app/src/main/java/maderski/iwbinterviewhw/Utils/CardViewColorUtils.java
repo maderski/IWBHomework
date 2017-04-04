@@ -15,7 +15,9 @@ public class CardViewColorUtils {
 
     public static void setCardColor(Context context, RecyclerView recyclerView, int cardPosition, int color){
         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(cardPosition);
-        LinearLayout linearLayout = (LinearLayout) viewHolder.itemView.findViewById(R.id.ll_list_item_layout);
-        linearLayout.setBackgroundColor(ContextCompat.getColor(context, color));
+        if(viewHolder != null) {
+            LinearLayout linearLayout = (LinearLayout) viewHolder.itemView.findViewById(R.id.ll_list_item_layout);
+            linearLayout.setBackgroundColor(ContextCompat.getColor(context, color));
+        }
     }
 }

@@ -2,11 +2,16 @@ package maderski.iwbinterviewhw.UI;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.google.android.flexbox.AlignItems;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 
 import java.util.List;
 
@@ -17,7 +22,7 @@ import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
 import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
 import maderski.iwbinterviewhw.Utils.ItemListUtils;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemTouchListener,
+public class MainActivity extends AppCompatActivity implements ItemViewHolder.ListItemTouchListener,
         TextToSpeechHelper.TextToSpeechCallback {
     private static final String TAG = "MainActivity";
 
@@ -39,11 +44,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         mItemList = ItemListUtils.getItemList();
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
-
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager();
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setAlignItems(AlignItems.CENTER);
+        layoutManager.setJustifyContent(JustifyContent.CENTER);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList, this);
 
@@ -128,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             public void run() {
                 List<Integer> allPositionsList = mTouchEventsHelper.getAllOnClickPositions();
                 if(allPositionsList.isEmpty()){
+                    Log.d(TAG, "Turn White: " + String.valueOf(mPosition));
                     CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, mPosition, R.color.white);
                 }else {
                     for (int clickedPosition : allPositionsList) {
