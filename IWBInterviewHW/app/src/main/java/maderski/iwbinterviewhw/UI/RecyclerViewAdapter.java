@@ -19,11 +19,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     private static final String TAG = "RecyclerViewAdapter";
 
     private List<ItemModel> mItemList;
-    private ItemViewHolder.ListItemTouchListener mOnTouchListener;
 
-    public RecyclerViewAdapter(List<ItemModel> itemList, ItemViewHolder.ListItemTouchListener listener){
+    public RecyclerViewAdapter(List<ItemModel> itemList){
         mItemList = itemList;
-        mOnTouchListener = listener;
     }
 
     // Inflate view from layout, set OnTouchListener and create View Holder
@@ -34,7 +32,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemViewHolder>{
 
         View view = inflater.inflate(R.layout.card_view_list_item, parent, shouldAttachToParentImmediately);
         ItemViewHolder viewHolder = new ItemViewHolder(view);
-        viewHolder.setOnTouchListener(mOnTouchListener);
 
         return viewHolder;
     }

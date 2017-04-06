@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -19,16 +20,18 @@ import maderski.iwbinterviewhw.Models.ItemModel;
 import maderski.iwbinterviewhw.R;
 import maderski.iwbinterviewhw.Helpers.TextToSpeechHelper;
 import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
+import maderski.iwbinterviewhw.CaptureTouchEvents;
 import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
 import maderski.iwbinterviewhw.Utils.ItemListUtils;
 
-public class MainActivity extends AppCompatActivity implements ItemViewHolder.ListItemTouchListener,
+public class MainActivity extends AppCompatActivity implements CaptureTouchEvents.ListItemTouchListener,
         TextToSpeechHelper.TextToSpeechCallback {
     private static final String TAG = "MainActivity";
 
     private List<ItemModel> mItemList;
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
+    private CaptureTouchEvents mCaptureTouchEvents;
     private RecyclerView mRecyclerView;
 
     private int mPosition;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
         mItemList = ItemListUtils.getItemList();
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        mRecyclerView.requestDisallowInterceptTouchEvent(true);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager();
         layoutManager.setFlexWrap(FlexWrap.WRAP);
@@ -53,9 +57,13 @@ public class MainActivity extends AppCompatActivity implements ItemViewHolder.Li
         layoutManager.setJustifyContent(JustifyContent.CENTER);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList, this);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList);
 
         mRecyclerView.setAdapter(recyclerViewAdapter);
+
+        View view = findViewById(R.id.v_touch_overlay);
+        mCaptureTouchEvents = new CaptureTouchEvents(view);
+        mCaptureTouchEvents.setOnTouchListener(this);
     }
 
     @Override
