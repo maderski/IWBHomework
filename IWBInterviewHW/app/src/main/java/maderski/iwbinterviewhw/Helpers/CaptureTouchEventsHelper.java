@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.Helpers;
 
 import android.util.Log;
 import android.view.MotionEvent;
@@ -8,7 +8,7 @@ import android.view.View;
  * Created by Jason on 4/6/17.
  */
 
-public class CaptureTouchEvents implements View.OnTouchListener {
+public class CaptureTouchEventsHelper implements View.OnTouchListener {
     private static final String TAG = "TouchOverlay";
 
     private ListItemTouchListener mOnTouchListener;
@@ -19,7 +19,7 @@ public class CaptureTouchEvents implements View.OnTouchListener {
         void onListItemCancel();
     }
 
-    public CaptureTouchEvents(View view){
+    public CaptureTouchEventsHelper(View view){
         view.setOnTouchListener(this);
     }
 

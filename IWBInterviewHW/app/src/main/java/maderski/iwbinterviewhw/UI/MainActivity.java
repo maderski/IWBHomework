@@ -1,11 +1,5 @@
 package maderski.iwbinterviewhw.UI;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -23,15 +17,16 @@ import com.google.android.flexbox.JustifyContent;
 
 import java.util.List;
 
+import maderski.iwbinterviewhw.Helpers.ViewCoordHelper;
 import maderski.iwbinterviewhw.Models.ItemModel;
 import maderski.iwbinterviewhw.R;
 import maderski.iwbinterviewhw.Helpers.TextToSpeechHelper;
 import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
-import maderski.iwbinterviewhw.CaptureTouchEvents;
+import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
 import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
 import maderski.iwbinterviewhw.Utils.ItemListUtils;
 
-public class MainActivity extends AppCompatActivity implements CaptureTouchEvents.ListItemTouchListener,
+public class MainActivity extends AppCompatActivity implements CaptureTouchEventsHelper.ListItemTouchListener,
         TextToSpeechHelper.TextToSpeechCallback {
     private static final String TAG = "MainActivity";
 
@@ -68,28 +63,11 @@ public class MainActivity extends AppCompatActivity implements CaptureTouchEvent
         mRecyclerView.setAdapter(recyclerViewAdapter);
 
         View view = findViewById(R.id.v_touch_overlay);
-        CaptureTouchEvents captureTouchEvents = new CaptureTouchEvents(view);
-        captureTouchEvents.setOnTouchListener(this);
+        CaptureTouchEventsHelper captureTouchEventsHelper = new CaptureTouchEventsHelper(view);
+        captureTouchEventsHelper.setOnTouchListener(this);
 
         final ViewTreeObserver viewTreeObserver = mRecyclerView.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
-
-                for(int i = 0; i < lm.getChildCount(); i++) {
-                    View v = lm.getChildAt(i);
-                    Rect rect = new Rect();
-                    v.getGlobalVisibleRect(rect);
-                    Log.d(TAG, "top: " + String.valueOf(rect.top)
-                            + " bottom: " + String.valueOf(rect.bottom)
-                            + " left: " + String.valueOf(rect.left)
-                            + " right: " + String.valueOf(rect.right));
-                }
-                mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
-
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewCoordHelper(mRecyclerView));
     }
 
     @Override
