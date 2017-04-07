@@ -1,10 +1,17 @@
 package maderski.iwbinterviewhw.UI;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -31,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements CaptureTouchEvent
     private List<ItemModel> mItemList;
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
-    private CaptureTouchEvents mCaptureTouchEvents;
     private RecyclerView mRecyclerView;
 
     private int mPosition;
@@ -62,13 +68,34 @@ public class MainActivity extends AppCompatActivity implements CaptureTouchEvent
         mRecyclerView.setAdapter(recyclerViewAdapter);
 
         View view = findViewById(R.id.v_touch_overlay);
-        mCaptureTouchEvents = new CaptureTouchEvents(view);
-        mCaptureTouchEvents.setOnTouchListener(this);
+        CaptureTouchEvents captureTouchEvents = new CaptureTouchEvents(view);
+        captureTouchEvents.setOnTouchListener(this);
+
+        final ViewTreeObserver viewTreeObserver = mRecyclerView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
+
+                for(int i = 0; i < lm.getChildCount(); i++) {
+                    View v = lm.getChildAt(i);
+                    Rect rect = new Rect();
+                    v.getGlobalVisibleRect(rect);
+                    Log.d(TAG, "top: " + String.valueOf(rect.top)
+                            + " bottom: " + String.valueOf(rect.bottom)
+                            + " left: " + String.valueOf(rect.left)
+                            + " right: " + String.valueOf(rect.right));
+                }
+                mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         if(mTextToSpeechHelper == null) {
             mTextToSpeechHelper = new TextToSpeechHelper(this, 0.9f, this);
         }
@@ -76,11 +103,6 @@ public class MainActivity extends AppCompatActivity implements CaptureTouchEvent
         if(mTouchEventsHelper == null) {
             mTouchEventsHelper = new TouchEventsHelper();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override

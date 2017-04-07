@@ -1,6 +1,8 @@
 package maderski.iwbinterviewhw.UI;
 
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,7 @@ import maderski.iwbinterviewhw.R;
  * Created by Jason on 3/30/17.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemViewHolder>{
+public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     private static final String TAG = "RecyclerViewAdapter";
 
@@ -31,6 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(R.layout.card_view_list_item, parent, shouldAttachToParentImmediately);
+
         ItemViewHolder viewHolder = new ItemViewHolder(view);
 
         return viewHolder;
