@@ -4,8 +4,10 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import maderski.iwbinterviewhw.Models.TouchEventModel;
@@ -17,7 +19,7 @@ import maderski.iwbinterviewhw.Models.TouchEventModel;
 public class TouchEventsHelper {
     private static final String TAG = "OnTouchHelper";
 
-    private SparseArray<TouchEventModel> mTouchEventModels = new SparseArray<>();
+    private HashMap<Integer, TouchEventModel> mTouchEventModels = new HashMap<>();
 
     public TouchEventsHelper(){}
 
@@ -41,25 +43,30 @@ public class TouchEventsHelper {
 
     // Remove touch event from list at a specified pressure
     public void removeTouchEvents(float pressure){
+        for (Object object : mTouchEventModels.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            TouchEventModel touchEventModel = (TouchEventModel) pair.getValue();
 
-        for(int i=0; i<mTouchEventModels.size(); i++){
-            TouchEventModel touchEventModel = mTouchEventModels.get(i);
             if(touchEventModel.getPressure() == pressure){
-                mTouchEventModels.remove(i);
+                mTouchEventModels.remove(positionId);
                 Log.d(TAG, "REMOVED pressure: " + String.valueOf(pressure)
-                        + " at key: " + String.valueOf(i));
+                        + " at key: " + String.valueOf(positionId));
             }
         }
     }
 
     // Remove touch event from list at a specified area
     public void removeTouchEvents(double area){
-        for(int i=0; i<mTouchEventModels.size(); i++){
-            TouchEventModel touchEventModel = mTouchEventModels.get(i);
+        for (Object object : mTouchEventModels.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            TouchEventModel touchEventModel = (TouchEventModel) pair.getValue();
+
             if(touchEventModel.getArea() == area){
-                mTouchEventModels.remove(i);
+                mTouchEventModels.remove(positionId);
                 Log.d(TAG, "REMOVED area: " + String.valueOf(area)
-                        + " at key: " + String.valueOf(i));
+                        + " at key: " + String.valueOf(positionId));
             }
         }
     }
@@ -73,8 +80,12 @@ public class TouchEventsHelper {
     // Gets the largest area on the list
     public double getLargestArea(){
         double maxArea = 0.0;
-        for(int i=0; i<mTouchEventModels.size(); i++){
-            TouchEventModel touchEventModel = mTouchEventModels.get(i);
+
+        for (Object object : mTouchEventModels.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            TouchEventModel touchEventModel = (TouchEventModel) pair.getValue();
+
             double area = touchEventModel.getArea();
             if(area > maxArea){
                 maxArea = area;
@@ -86,8 +97,12 @@ public class TouchEventsHelper {
     // Gets the largest pressure on the list
     public float getLargestPressure(){
         float maxPressure = 0.0f;
-        for(int i=0; i<mTouchEventModels.size(); i++){
-            TouchEventModel touchEventModel = mTouchEventModels.get(i);
+
+        for (Object object : mTouchEventModels.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            TouchEventModel touchEventModel = (TouchEventModel) pair.getValue();
+
             float pressure = touchEventModel.getPressure();
             if(pressure > maxPressure){
                 maxPressure = pressure;
@@ -99,8 +114,11 @@ public class TouchEventsHelper {
     // Gets all OnClickPositions that is on the list
     public List<Integer> getAllOnClickPositions(){
         Set<Integer> positions = new HashSet<>();
-        for(int i = 0; i < mTouchEventModels.size(); i++){
-            positions.add(i);
+
+        for (Object object : mTouchEventModels.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            positions.add(positionId);
         }
         return new ArrayList<>(positions);
     }
@@ -108,11 +126,15 @@ public class TouchEventsHelper {
     // Gets all OnClickPositions with the largest areas
     public List<Integer> getOnClickPositions(double largestArea){
         Set<Integer> positions = new HashSet<>();
-        for(int i=0; i<mTouchEventModels.size(); i++) {
-            TouchEventModel touchEventModel = mTouchEventModels.get(i);
+
+        for (Object object : mTouchEventModels.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            TouchEventModel touchEventModel = (TouchEventModel) pair.getValue();
+
             double touchEventArea = touchEventModel.getArea();
             if(touchEventArea == largestArea){
-                positions.add(i);
+                positions.add(positionId);
             }
         }
         return new ArrayList<>(positions);
@@ -121,18 +143,22 @@ public class TouchEventsHelper {
     // Gets OnClickPosition with the largest pressure
     public int getOnClickPosition(float largestPressure){
         int position = -1;
-        for(int i=0; i< mTouchEventModels.size(); i++) {
-            TouchEventModel touchEventModel = mTouchEventModels.get(i);
+
+        for (Object object : mTouchEventModels.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            TouchEventModel touchEventModel = (TouchEventModel) pair.getValue();
+
             float touchEventPressure = touchEventModel.getPressure();
             if(touchEventPressure == largestPressure){
-                position = i;
+                position = positionId;
             }
         }
         Log.d(TAG, "USED PRESSURE");
         return position;
     }
 
-    public SparseArray<TouchEventModel> getTouchEventModels() {
+    public HashMap<Integer, TouchEventModel> getTouchEventModels() {
         return mTouchEventModels;
     }
 }

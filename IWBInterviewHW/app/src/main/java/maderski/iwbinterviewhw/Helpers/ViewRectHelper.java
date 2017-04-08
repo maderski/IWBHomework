@@ -3,9 +3,11 @@ package maderski.iwbinterviewhw.Helpers;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import maderski.iwbinterviewhw.Models.ViewRectModel;
 
@@ -17,7 +19,7 @@ public class ViewRectHelper implements ViewTreeObserver.OnGlobalLayoutListener {
     private static final String TAG = "ViewCoordHelper";
 
     private RecyclerView mRecyclerView;
-    private SparseArray<ViewRectModel> mViewRectangles = new SparseArray<>();
+    private HashMap<Integer, ViewRectModel> mViewRectangles = new HashMap<>();
 
     public ViewRectHelper(RecyclerView recyclerView){
         mRecyclerView = recyclerView;
@@ -39,9 +41,12 @@ public class ViewRectHelper implements ViewTreeObserver.OnGlobalLayoutListener {
         }
         mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-        for(int i=0; i<mViewRectangles.size(); i++){
-            ViewRectModel viewRectangle = mViewRectangles.get(i);
-            Log.d(TAG, "position: " + String.valueOf(i)
+        for (Object object : mViewRectangles.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+            int positionId = (int) pair.getKey();
+            ViewRectModel viewRectangle = (ViewRectModel) pair.getValue();
+
+            Log.d(TAG, "position: " + String.valueOf(positionId)
                     + "\ntop: " + String.valueOf(viewRectangle.getTop())
                     + " right: " + String.valueOf(viewRectangle.getRight())
                     + " bottom: " + String.valueOf(viewRectangle.getBottom())
@@ -49,7 +54,7 @@ public class ViewRectHelper implements ViewTreeObserver.OnGlobalLayoutListener {
         }
     }
 
-    public SparseArray<ViewRectModel> getViewRectangles(){
+    public HashMap<Integer, ViewRectModel> getViewRectangles(){
         return mViewRectangles;
     }
 }

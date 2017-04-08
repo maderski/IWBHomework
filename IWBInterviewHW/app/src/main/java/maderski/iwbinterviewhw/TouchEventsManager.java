@@ -3,7 +3,6 @@ package maderski.iwbinterviewhw;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
@@ -38,11 +37,11 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
 
     @Override
     public void currentTouchEvents(HashMap<Integer, TouchEventModel> touchEvents) {
-        for (Object o : touchEvents.entrySet()) {
-            Map.Entry pair = (Map.Entry) o;
+        for (Object object : touchEvents.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
             int positionId = (int) pair.getKey();
-            TouchEventModel tem = (TouchEventModel) pair.getValue();
-            Log.d(TAG, "POSITION ID: " + String.valueOf(positionId) + " area: " + String.valueOf(tem.getArea()));
+            TouchEventModel touchEventModel = (TouchEventModel) pair.getValue();
+            Log.d(TAG, "POSITION ID: " + String.valueOf(positionId) + " area: " + String.valueOf(touchEventModel.getArea()));
         }
     }
 }
