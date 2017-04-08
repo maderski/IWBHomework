@@ -29,7 +29,7 @@ import maderski.iwbinterviewhw.Utils.ItemListUtils;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeechHelper.TextToSpeechCallback {
     private static final String TAG = "MainActivity";
-    
+
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;

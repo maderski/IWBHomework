@@ -20,10 +20,15 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
 
     private TouchEventsHelper mTouchEventsHelper;
     private ViewRectHelper mRectangleHelper;
+    private PositionCallbacks mPositionCallbacks;
 
     public TouchEventsManager(TouchEventsHelper touchEventsHelper, ViewRectHelper rectangleHelper){
         mTouchEventsHelper = touchEventsHelper;
         mRectangleHelper = rectangleHelper;
+    }
+
+    public void setPositionCallbacks(PositionCallbacks callback){
+        mPositionCallbacks = callback;
     }
 
     @Override
