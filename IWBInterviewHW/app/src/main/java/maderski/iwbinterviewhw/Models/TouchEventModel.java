@@ -6,18 +6,37 @@ package maderski.iwbinterviewhw.Models;
 
 public class TouchEventModel {
 
-    private int mOnClickedPosition;
+    private float mX;
+    private float mY;
+    private float mMajorAxis;
+    private float mMinorAxis;
     private float mPressure;
     private double mArea;
 
-    public TouchEventModel(int onClickedPosition, float pressure, double area) {
-        mOnClickedPosition = onClickedPosition;
+    public TouchEventModel(float x, float y, float majorAxis, float minorAxis,
+                           float pressure, double area) {
+        mX = x;
+        mY = y;
+        mMajorAxis = majorAxis;
+        mMinorAxis = minorAxis;
         mPressure = pressure;
         mArea = area;
     }
 
-    public int getOnClickedPosition(){
-        return mOnClickedPosition;
+    public float getX() {
+        return mX;
+    }
+
+    public float getY() {
+        return mY;
+    }
+
+    public float getMajorAxis() {
+        return mMajorAxis;
+    }
+
+    public float getMinorAxis() {
+        return mMinorAxis;
     }
 
     public float getPressure(){

@@ -17,26 +17,25 @@ import com.google.android.flexbox.JustifyContent;
 
 import java.util.List;
 
-import maderski.iwbinterviewhw.Helpers.ViewCoordHelper;
+import maderski.iwbinterviewhw.Helpers.ViewRectHelper;
 import maderski.iwbinterviewhw.Models.ItemModel;
 import maderski.iwbinterviewhw.R;
 import maderski.iwbinterviewhw.Helpers.TextToSpeechHelper;
 import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
 import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
+import maderski.iwbinterviewhw.TouchEventsManager;
 import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
 import maderski.iwbinterviewhw.Utils.ItemListUtils;
 
-public class MainActivity extends AppCompatActivity implements CaptureTouchEventsHelper.ListItemTouchListener,
-        TextToSpeechHelper.TextToSpeechCallback {
+public class MainActivity extends AppCompatActivity implements TextToSpeechHelper.TextToSpeechCallback {
     private static final String TAG = "MainActivity";
-
-    private List<ItemModel> mItemList;
+    
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;
+    private ViewRectHelper mViewRectHelper;
 
     private int mPosition;
-    private boolean canPerformActions = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements CaptureTouchEvent
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        mItemList = ItemListUtils.getItemList();
+        List<ItemModel> itemList = ItemListUtils.getItemList();
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         mRecyclerView.requestDisallowInterceptTouchEvent(true);
@@ -58,16 +57,17 @@ public class MainActivity extends AppCompatActivity implements CaptureTouchEvent
         layoutManager.setJustifyContent(JustifyContent.CENTER);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(itemList);
 
         mRecyclerView.setAdapter(recyclerViewAdapter);
 
+        final ViewTreeObserver viewTreeObserver = mRecyclerView.getViewTreeObserver();
+        mViewRectHelper = new ViewRectHelper(mRecyclerView);
+        viewTreeObserver.addOnGlobalLayoutListener(mViewRectHelper);
+
         View view = findViewById(R.id.v_touch_overlay);
         CaptureTouchEventsHelper captureTouchEventsHelper = new CaptureTouchEventsHelper(view);
-        captureTouchEventsHelper.setOnTouchListener(this);
-
-        final ViewTreeObserver viewTreeObserver = mRecyclerView.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewCoordHelper(mRecyclerView));
+        captureTouchEventsHelper.setOnTouchListener(new TouchEventsManager(mTouchEventsHelper, mViewRectHelper));
     }
 
     @Override
@@ -89,58 +89,6 @@ public class MainActivity extends AppCompatActivity implements CaptureTouchEvent
         if(mTextToSpeechHelper != null){
             mTextToSpeechHelper.shutdownTextToSpeech();
         }
-    }
-
-    // When an item is touched, set the card background color to light orange, add the touch event to the touch event list
-    @Override
-    public void onListItemPressed(int clickedItemIndex, float pressure, double areaOfEllipse) {
-        CardViewColorUtils.setCardColor(this, mRecyclerView, clickedItemIndex, R.color.lightOrange);
-        mTouchEventsHelper.addTouchEvent(clickedItemIndex, pressure, areaOfEllipse);
-        canPerformActions = true;
-    }
-
-    // When an item touch is released, speak out
-    @Override
-    public void onListItemReleased(int clickedItemIndex) {
-        Log.d(TAG, "Item RELEASED");
-        speakOut(canPerformActions);
-    }
-
-    // When touch is cancelled, speak out
-    @Override
-    public void onListItemCancel() {
-        canPerformActions = true;
-        speakOut(canPerformActions);
-        Log.d(TAG, "CANCELLED");
-    }
-
-    // Find the position at which the user intended to touch and they speak out the text from the found position
-    public void speakOut(boolean canSpeak){
-        if(canSpeak){
-            canPerformActions = false;
-            findPosition();
-            String itemText = mItemList.get(mPosition).getString(this);
-            mTextToSpeechHelper.speakText(itemText);
-        }
-    }
-
-    // Finds the position that the user intended by first looking for the largest area and picks
-    // the position that has the largest area touched.  If there are two or more areas that are
-    // equal, it will then choose the position based on the highest pressure.
-    public int findPosition(){
-        int position = mPosition;
-        List<Integer> largestAreaPositions = mTouchEventsHelper.getOnClickPositions(mTouchEventsHelper.getLargestArea());
-        if(largestAreaPositions.size() == 1){
-            position = largestAreaPositions.get(0);
-        } else if(!largestAreaPositions.isEmpty()){
-            for(int p : largestAreaPositions){
-                Log.d(TAG, "LARGEST AREA POSITIONS: " + String.valueOf(p));
-            }
-            position = mTouchEventsHelper.getOnClickPosition(mTouchEventsHelper.getLargestPressure());
-        }
-        Log.d(TAG, "POSITION CHOOSEN: " + String.valueOf(position));
-        mPosition = position;
-        return position;
     }
 
     // When done speaking, set colored cards back to white and then remove all touch events

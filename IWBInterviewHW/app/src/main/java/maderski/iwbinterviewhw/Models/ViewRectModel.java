@@ -5,18 +5,13 @@ package maderski.iwbinterviewhw.Models;
  */
 
 public class ViewRectModel {
-    private int mPosition, mTop, mRight, mBottom, mLeft;
+    private int mTop, mRight, mBottom, mLeft;
 
-    public ViewRectModel(int position, int top, int right, int bottom, int left){
-        mPosition = position;
+    public ViewRectModel(int top, int right, int bottom, int left){
         mTop = top;
         mRight = right;
         mBottom = bottom;
         mLeft = left;
-    }
-
-    public int getPosition() {
-        return mPosition;
     }
 
     public int getTop() {
