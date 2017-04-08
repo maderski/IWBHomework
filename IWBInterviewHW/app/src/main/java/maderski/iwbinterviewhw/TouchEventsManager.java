@@ -2,9 +2,14 @@ package maderski.iwbinterviewhw;
 
 import android.util.Log;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
 import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
 import maderski.iwbinterviewhw.Helpers.ViewRectHelper;
+import maderski.iwbinterviewhw.Models.TouchEventModel;
 
 /**
  * Created by Jason on 4/8/17.
@@ -32,27 +37,12 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
     }
 
     @Override
-    public void singleTouchPressed(float x, float y, float majorAxis, float minorAxis, float pressure) {
-
-    }
-
-    @Override
-    public void singleTouchReleased(int pointerId) {
-
-    }
-
-    @Override
-    public void multiTouchPressed(int pointerId, float x, float y, float majorAxis, float minorAxis, float pressure) {
-
-    }
-
-    @Override
-    public void multiTouchReleased(int pointerId) {
-
-    }
-
-    @Override
-    public void touchCancel() {
-
+    public void currentTouchEvents(HashMap<Integer, TouchEventModel> touchEvents) {
+        for (Object o : touchEvents.entrySet()) {
+            Map.Entry pair = (Map.Entry) o;
+            int positionId = (int) pair.getKey();
+            TouchEventModel tem = (TouchEventModel) pair.getValue();
+            Log.d(TAG, "POSITION ID: " + String.valueOf(positionId) + " area: " + String.valueOf(tem.getArea()));
+        }
     }
 }

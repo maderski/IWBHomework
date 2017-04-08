@@ -4,6 +4,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import maderski.iwbinterviewhw.Models.TouchEventModel;
+
 /**
  * Created by Jason on 4/6/17.
  */
@@ -11,15 +17,13 @@ import android.view.View;
 public class CaptureTouchEventsHelper implements View.OnTouchListener {
     private static final String TAG = "TouchOverlay";
 
-    private OnTouchListener mOnTouchListener;
-
     public interface OnTouchListener {
-        void singleTouchPressed(float x, float y, float majorAxis, float minorAxis, float pressure);
-        void singleTouchReleased(int pointerId);
-        void multiTouchPressed(int pointerId, float x, float y, float majorAxis, float minorAxis, float pressure);
-        void multiTouchReleased(int pointerId);
-        void touchCancel();
+        void currentTouchEvents(HashMap<Integer, TouchEventModel> touchEvents);
     }
+
+    private OnTouchListener mOnTouchListener;
+    private int mPointerIdOnTouch;
+    private HashMap<Integer, TouchEventModel> mCurrentTouchEvents = new HashMap<>();
 
     public CaptureTouchEventsHelper(View view){
         view.setOnTouchListener(this);
@@ -33,77 +37,58 @@ public class CaptureTouchEventsHelper implements View.OnTouchListener {
     // Captures touch events
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        int action = motionEvent.getActionMasked();
+        float xCoord, yCoord, pressure, majorAxis, minorAxis;
+        double area;
+        TouchEventModel touchEventModel;
 
+        int action = motionEvent.getActionMasked();
         int actionIndex = motionEvent.getActionIndex();
-        int pointerId = motionEvent.getPointerId(actionIndex);
         int pointerCount = motionEvent.getPointerCount();
+        mPointerIdOnTouch = motionEvent.getPointerId(actionIndex);
 
         switch(action) {
             case MotionEvent.ACTION_POINTER_DOWN:
                 Log.d(TAG, "MULTI PRESS");
-                for(int i=0; i<pointerCount; i++){
-                    pointerId = motionEvent.getPointerId(i);
-                    float xCoord = motionEvent.getX(i);
-                    float yCoord = motionEvent.getY(i);
-                    float pressure = motionEvent.getPressure();
 
-                    try {
-                        float majorAxis = motionEvent.getTouchMajor(pointerId);
-                        float minorAxis = motionEvent.getTouchMinor(pointerId);
-                        Log.d(TAG, "pointer count: " + String.valueOf(pointerCount));
-                        Log.d(TAG, "pointer id: " + String.valueOf(pointerId)
-                                + " X: " + String.valueOf(xCoord)
-                                + " Y: " + String.valueOf(yCoord));
-                        mOnTouchListener.multiTouchPressed(pointerId, xCoord, yCoord, majorAxis, minorAxis, pressure);
-                    } catch(Exception e){
-                        e.getMessage();
-                    }
-                }
+                xCoord = motionEvent.getX(mPointerIdOnTouch);
+                yCoord = motionEvent.getY(mPointerIdOnTouch);
+                pressure = motionEvent.getPressure(mPointerIdOnTouch);
+                majorAxis = motionEvent.getTouchMajor(mPointerIdOnTouch);
+                minorAxis = motionEvent.getTouchMinor(mPointerIdOnTouch);
+                area = Math.PI * majorAxis * minorAxis;
+                touchEventModel = new TouchEventModel(xCoord, yCoord, majorAxis, minorAxis, pressure, area);
+                mCurrentTouchEvents.put(mPointerIdOnTouch, touchEventModel);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 Log.d(TAG, "MULTI RELEASE");
-                for(int i=0; i<pointerCount; i++){
-                    pointerId = motionEvent.getPointerId(i);
-                    float xCoord = motionEvent.getX(i);
-                    float yCoord = motionEvent.getY(i);
-
-                    try {
-                        Log.d(TAG, "pointer count: " + String.valueOf(pointerCount));
-                        Log.d(TAG, "pointer id: " + String.valueOf(pointerId)
-                                + " X: " + String.valueOf(xCoord)
-                                + " Y: " + String.valueOf(yCoord));
-                        mOnTouchListener.multiTouchReleased(pointerId);
-                    } catch(Exception e){
-                        e.getMessage();
-                    }
-                }
+                mCurrentTouchEvents.remove(mPointerIdOnTouch);
                 break;
             case MotionEvent.ACTION_DOWN:
                 if(pointerCount == 1){
                     Log.d(TAG, "SINGLE PRESS");
-                    float xCoord = motionEvent.getX();
-                    float yCoord = motionEvent.getY();
-                    float majorAxis = motionEvent.getTouchMajor();
-                    float minorAxis = motionEvent.getTouchMinor();
-                    float pressure = motionEvent.getPressure();
-                    Log.d(TAG, "pointer id: " + String.valueOf(pointerId)
-                            + " X: " + String.valueOf(xCoord)
-                            + " Y: " + String.valueOf(yCoord));
-                    mOnTouchListener.singleTouchPressed(xCoord, yCoord, majorAxis, minorAxis, pressure);
+
+                    xCoord = motionEvent.getX(mPointerIdOnTouch);
+                    yCoord = motionEvent.getY(mPointerIdOnTouch);
+                    pressure = motionEvent.getPressure(mPointerIdOnTouch);
+                    majorAxis = motionEvent.getTouchMajor(mPointerIdOnTouch);
+                    minorAxis = motionEvent.getTouchMinor(mPointerIdOnTouch);
+                    area = Math.PI * majorAxis * minorAxis;
+                    touchEventModel = new TouchEventModel(xCoord, yCoord, majorAxis, minorAxis, pressure, area);
+                    mCurrentTouchEvents.put(mPointerIdOnTouch, touchEventModel);
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 if(pointerCount == 1) {
                     Log.d(TAG, "SINGLE RELEASE");
-                    Log.d(TAG, "pointer id: " + String.valueOf(pointerId));
-                    mOnTouchListener.singleTouchReleased(pointerId);
+                    mCurrentTouchEvents.remove(mPointerIdOnTouch);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
-                mOnTouchListener.touchCancel();
+                Log.d(TAG, "CANCELLED");
                 break;
         }
+
+        mOnTouchListener.currentTouchEvents(mCurrentTouchEvents);
         return true;
     }
 }
