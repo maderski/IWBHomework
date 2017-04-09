@@ -1,11 +1,14 @@
 package maderski.iwbinterviewhw;
 
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
 import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
@@ -28,46 +31,84 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
     private TouchEventsHelper mTouchEventsHelper;
     private ViewRectHelper mRectangleHelper;
     private PositionCallbacks mPositionCallbacks;
+    private HashMap<Integer, RectangleTouchEvent> mRectangleTouchEvents = new HashMap<>();
 
-    public TouchEventsManager(TouchEventsHelper touchEventsHelper, ViewRectHelper rectangleHelper){
+    public TouchEventsManager(TouchEventsHelper touchEventsHelper, ViewRectHelper rectangleHelper,
+                              PositionCallbacks positionCallback ){
         mTouchEventsHelper = touchEventsHelper;
         mRectangleHelper = rectangleHelper;
-    }
-
-    public void setPositionCallbacks(PositionCallbacks callback){
-        mPositionCallbacks = callback;
+        mPositionCallbacks = positionCallback;
     }
 
     @Override
     public void currentTouchEvents(HashMap<Integer, TouchEventModel> touchEvents) {
         for (Object object : touchEvents.entrySet()) {
             Map.Entry pair = (Map.Entry) object;
-            int positionId = (int) pair.getKey();
+            int pointerPositionId = (int) pair.getKey();
             TouchEventModel touchEvent = (TouchEventModel) pair.getValue();
-            //Log.d(TAG, "POSITION ID: " + String.valueOf(positionId) + " area: " + String.valueOf(touchEventModel.getArea()));
-            List<Integer> touchingRectangles = getTouchedRectangle(touchEvent);
-            for (Integer position : touchingRectangles){
-                Log.d(TAG, "TOUCHING POSITION: " + String.valueOf(position));
+
+            mTouchEventsHelper.addTouchEvent(pointerPositionId, touchEvent);
+            List<RectangleTouchEvent> rectangleTouchEvents = getTouchedRectangles(touchEvent);
+            List<Integer> touchingRectangles = getPositionsList(rectangleTouchEvents);
+            mPositionCallbacks.pressedPositions(touchingRectangles);
+
+            for(RectangleTouchEvent rectangleTouchEvent : rectangleTouchEvents) {
+                mRectangleTouchEvents.put(pointerPositionId, rectangleTouchEvent);
             }
+
         }
+        startSearchforPosition();
     }
 
-    private List<Integer> getTouchedRectangle(TouchEventModel touchEvent) {
-        List<Integer> positions = new ArrayList<>();
+    private void startSearchforPosition(){
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                findChoosenPosition(mRectangleTouchEvents);
+            }
+        };
+        handler.postDelayed(runnable, 500);
+    }
+
+    private List<Integer> getPositionsList(List<RectangleTouchEvent> list){
+        List<Integer> positionList = new ArrayList<>();
+        for(RectangleTouchEvent rectangleTouchEvent : list){
+            positionList.add(rectangleTouchEvent.getRectanglePosition());
+        }
+
+        return positionList;
+    }
+
+    private void findChoosenPosition(HashMap<Integer, RectangleTouchEvent> rectangleTouchEventList){
+        Log.d(TAG, "CHOOSEN...");
+        for(Object object : rectangleTouchEventList.entrySet()){
+            Map.Entry pair = (Map.Entry) object;
+            RectangleTouchEvent rectangleTouchEvent = (RectangleTouchEvent) pair.getValue();
+            int position = rectangleTouchEvent.getRectanglePosition();
+            int pointerPositionId = (int) pair.getKey();
+            TouchEventModel touchEvent = rectangleTouchEvent.getTouchEvent();
+            Log.d(TAG, "CHOOSEN ID: " + String.valueOf(pointerPositionId) + " P: " + String.valueOf(position) + " A: " + String.valueOf(touchEvent.getArea()));
+        }
+        mRectangleTouchEvents.clear();
+    }
+
+    private List<RectangleTouchEvent> getTouchedRectangles(TouchEventModel touchEvent) {
+        List<RectangleTouchEvent> rectangleTouchEventList = new ArrayList<>();
         HashMap<Integer, ViewRectModel> Rectangles = mRectangleHelper.getViewRectangles();
         for(Object object : Rectangles.entrySet()){
             Map.Entry pair = (Map.Entry) object;
             ViewRectModel rectangle = (ViewRectModel) pair.getValue();
-            boolean doesTouchRectangle = doesTouchRectangle(touchEvent, rectangle, (int) pair.getKey());
+            boolean doesTouchRectangle = doesTouchRectangle(touchEvent, rectangle);
             if(doesTouchRectangle){
                 int position = (int) pair.getKey();
-                positions.add(position);
+                rectangleTouchEventList.add(new RectangleTouchEvent(position, touchEvent));
             }
         }
-        return positions;
+        return rectangleTouchEventList;
     }
 
-    private boolean doesTouchRectangle(TouchEventModel touchEvent, ViewRectModel rectangle, int position){
+    private boolean doesTouchRectangle(TouchEventModel touchEvent, ViewRectModel rectangle){
         float x = touchEvent.getX();
         float y = touchEvent.getY();
         float semiMajorAxis = touchEvent.getMajorAxis()/2;
@@ -76,10 +117,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         float ellipseVertexBottom = y - semiMajorAxis;
         float ellipseCovertexRight = x + semiMinorAxis;
         float ellipseCovertexLeft = x - semiMinorAxis;
-        Log.d(TAG, "RECT TOP: " + String.valueOf(rectangle.getTop()) + " VERTEX TOP: " + String.valueOf(ellipseVertexTop));
-        Log.d(TAG, "RECT BTM: " + String.valueOf(rectangle.getBottom()) + " VERTEX BTM: " + String.valueOf(ellipseVertexBottom));
-        Log.d(TAG, "RECT LFT: " + String.valueOf(rectangle.getLeft()) + " VERTEX LFT: " + String.valueOf(ellipseCovertexLeft));
-        Log.d(TAG, "RECT RGT: " + String.valueOf(rectangle.getRight()) + " VERTEX RGT: " + String.valueOf(ellipseCovertexRight));
+
         boolean isTouching = false;
 
         // Checks the top part of the ellipse
@@ -107,7 +145,25 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
             }
         }
 
-        Log.d(TAG, "IS TOUCHING: " + String.valueOf(isTouching) + " Position: " + String.valueOf(position));
+//        Log.d(TAG, "IS TOUCHING: " + String.valueOf(isTouching) + " Position: " + String.valueOf(position));
         return isTouching;
+    }
+
+    private class RectangleTouchEvent {
+        private int rectanglePosition;
+        private TouchEventModel touchEvent;
+
+        public RectangleTouchEvent(int rectanglePosition, TouchEventModel touchEvent){
+            this.rectanglePosition = rectanglePosition;
+            this.touchEvent = touchEvent;
+        }
+
+        public int getRectanglePosition() {
+            return rectanglePosition;
+        }
+
+        public TouchEventModel getTouchEvent() {
+            return touchEvent;
+        }
     }
 }

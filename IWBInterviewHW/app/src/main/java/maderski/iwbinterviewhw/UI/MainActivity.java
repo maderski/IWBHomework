@@ -27,14 +27,15 @@ import maderski.iwbinterviewhw.TouchEventsManager;
 import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
 import maderski.iwbinterviewhw.Utils.ItemListUtils;
 
-public class MainActivity extends AppCompatActivity implements TextToSpeechHelper.TextToSpeechCallback {
+public class MainActivity extends AppCompatActivity implements TextToSpeechHelper.TextToSpeechCallback,
+        TouchEventsManager.PositionCallbacks{
     private static final String TAG = "MainActivity";
 
+    private List<ItemModel> mItemList;
     private TextToSpeechHelper mTextToSpeechHelper;
     private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;
     private ViewRectHelper mViewRectHelper;
-
     private int mPosition;
 
     @Override
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        List<ItemModel> itemList = ItemListUtils.getItemList();
+        mItemList = ItemListUtils.getItemList();
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         mRecyclerView.requestDisallowInterceptTouchEvent(true);
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
         layoutManager.setJustifyContent(JustifyContent.CENTER);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(itemList);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mItemList);
 
         mRecyclerView.setAdapter(recyclerViewAdapter);
 
@@ -65,9 +66,11 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
         mViewRectHelper = new ViewRectHelper(mRecyclerView);
         viewTreeObserver.addOnGlobalLayoutListener(mViewRectHelper);
 
+        mTouchEventsHelper = new TouchEventsHelper();
+
         View view = findViewById(R.id.v_touch_overlay);
         CaptureTouchEventsHelper captureTouchEventsHelper = new CaptureTouchEventsHelper(view);
-        captureTouchEventsHelper.setOnTouchListener(new TouchEventsManager(mTouchEventsHelper, mViewRectHelper));
+        captureTouchEventsHelper.setOnTouchListener(new TouchEventsManager(mTouchEventsHelper, mViewRectHelper, this));
     }
 
     @Override
@@ -97,17 +100,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                List<Integer> allPositionsList = mTouchEventsHelper.getAllOnClickPositions();
-                if(allPositionsList.isEmpty()){
-                    Log.d(TAG, "Turn White: " + String.valueOf(mPosition));
-                    CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, mPosition, R.color.white);
-                }else {
-                    for (int clickedPosition : allPositionsList) {
-                        Log.d(TAG, "Turn White: " + String.valueOf(clickedPosition));
-                        CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, clickedPosition, R.color.white);
-                    }
-                    mTouchEventsHelper.removeAllTouchEvents();
+                for (int i=0; i<mItemList.size(); i++) {
+                    CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, i, R.color.white);
                 }
+                mTouchEventsHelper.removeAllTouchEvents();
             }
         });
     }
@@ -119,6 +115,27 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
             @Override
             public void run() {
                 CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, mPosition, R.color.orange);
+            }
+        });
+    }
+
+    @Override
+    public void choosenPosition(int position) {
+        mPosition = position;
+        Log.d(TAG, "Choosen Position: " + String.valueOf(position));
+        String itemText = mItemList.get(mPosition).getString(this);
+        mTextToSpeechHelper.speakText(itemText);
+    }
+
+    @Override
+    public void pressedPositions(final List<Integer> positions) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Integer position : positions) {
+                    Log.d(TAG, "TOUCHING POSITION: " + String.valueOf(position));
+                    CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, position, R.color.lightOrange);
+                }
             }
         });
     }

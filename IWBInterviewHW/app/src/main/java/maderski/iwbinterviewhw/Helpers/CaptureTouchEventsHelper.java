@@ -5,8 +5,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import maderski.iwbinterviewhw.Models.TouchEventModel;
 

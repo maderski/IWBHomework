@@ -24,13 +24,17 @@ public class TouchEventsHelper {
     public TouchEventsHelper(){}
 
     // Add Touch Event to list
-    public void addTouchEvent(int onClickedPosition, float x, float y, float majorAxis,
-                              float minorAxis, float pressure){
+    public void addTouchEvent(int pointerPositionId, TouchEventModel touchEvent){
+        float x = touchEvent.getX();
+        float y = touchEvent.getY();
+        float majorAxis = touchEvent.getMajorAxis();
+        float minorAxis = touchEvent.getMinorAxis();
+        float pressure = touchEvent.getPressure();
         Double area = Math.PI * majorAxis * minorAxis;
-        TouchEventModel touchEventModel = new TouchEventModel(x, y, majorAxis, minorAxis, pressure, area);
-        mTouchEventModels.put(onClickedPosition, touchEventModel);
+
+        mTouchEventModels.put(pointerPositionId, touchEvent);
         Log.d(TAG, "ADDED: "
-            + " Position: " + String.valueOf(onClickedPosition)
+            + " Pointer Position: " + String.valueOf(pointerPositionId)
             + " Pressure: " + String.valueOf(pressure)
             + " Area: " + String.valueOf(area));
     }
