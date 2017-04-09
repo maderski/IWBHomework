@@ -1,8 +1,7 @@
-package maderski.iwbinterviewhw;
+package maderski.iwbinterviewhw.Managers;
 
 import android.os.Handler;
 import android.util.Log;
-import android.util.SparseArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
-import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
 import maderski.iwbinterviewhw.Helpers.ViewRectHelper;
 import maderski.iwbinterviewhw.Models.TouchEventModel;
 import maderski.iwbinterviewhw.Models.ViewRectModel;
@@ -27,14 +25,12 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         void pressedPositions(List<Integer> positions);
     }
 
-    private TouchEventsHelper mTouchEventsHelper;
     private ViewRectHelper mRectangleHelper;
     private PositionCallbacks mPositionCallbacks;
     private HashMap<Integer, RectangleTouchEvent> mRectangleTouchEvents = new HashMap<>();
 
-    public TouchEventsManager(TouchEventsHelper touchEventsHelper, ViewRectHelper rectangleHelper,
+    public TouchEventsManager(ViewRectHelper rectangleHelper,
                               PositionCallbacks positionCallback ){
-        mTouchEventsHelper = touchEventsHelper;
         mRectangleHelper = rectangleHelper;
         mPositionCallbacks = positionCallback;
     }
@@ -46,7 +42,6 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
             int pointerPositionId = (int) pair.getKey();
             TouchEventModel touchEvent = (TouchEventModel) pair.getValue();
 
-            //mTouchEventsHelper.addTouchEvent(pointerPositionId, touchEvent);
             List<RectangleTouchEvent> rectangleTouchEvents = getTouchedRectangles(touchEvent);
             List<Integer> touchingRectangles = getPositionsList(rectangleTouchEvents);
             mPositionCallbacks.pressedPositions(touchingRectangles);

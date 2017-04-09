@@ -21,9 +21,8 @@ import maderski.iwbinterviewhw.Helpers.ViewRectHelper;
 import maderski.iwbinterviewhw.Models.ItemModel;
 import maderski.iwbinterviewhw.R;
 import maderski.iwbinterviewhw.Helpers.TextToSpeechHelper;
-import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
 import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
-import maderski.iwbinterviewhw.TouchEventsManager;
+import maderski.iwbinterviewhw.Managers.TouchEventsManager;
 import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
 import maderski.iwbinterviewhw.Utils.ItemListUtils;
 
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
 
     private List<ItemModel> mItemList;
     private TextToSpeechHelper mTextToSpeechHelper;
-    private TouchEventsHelper mTouchEventsHelper;
     private RecyclerView mRecyclerView;
     private ViewRectHelper mViewRectHelper;
     private int mPosition;
@@ -66,11 +64,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
         mViewRectHelper = new ViewRectHelper(mRecyclerView);
         viewTreeObserver.addOnGlobalLayoutListener(mViewRectHelper);
 
-        mTouchEventsHelper = new TouchEventsHelper();
-
         View view = findViewById(R.id.v_touch_overlay);
         CaptureTouchEventsHelper captureTouchEventsHelper = new CaptureTouchEventsHelper(view);
-        captureTouchEventsHelper.setOnTouchListener(new TouchEventsManager(mTouchEventsHelper, mViewRectHelper, this));
+        captureTouchEventsHelper.setOnTouchListener(new TouchEventsManager(mViewRectHelper, this));
     }
 
     @Override
@@ -79,10 +75,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
 
         if(mTextToSpeechHelper == null) {
             mTextToSpeechHelper = new TextToSpeechHelper(this, 0.9f, this);
-        }
-
-        if(mTouchEventsHelper == null) {
-            mTouchEventsHelper = new TouchEventsHelper();
         }
     }
 
@@ -103,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
                 for (int i=0; i<mItemList.size(); i++) {
                     CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, i, R.color.white);
                 }
-                //mTouchEventsHelper.removeAllTouchEvents();
             }
         });
     }
