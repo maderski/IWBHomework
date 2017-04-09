@@ -25,6 +25,7 @@ public class ViewRectHelper implements ViewTreeObserver.OnGlobalLayoutListener {
         mRecyclerView = recyclerView;
     }
 
+    // Get the boundaries/rectangles for the views
     @Override
     public void onGlobalLayout() {
         RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
@@ -54,6 +55,7 @@ public class ViewRectHelper implements ViewTreeObserver.OnGlobalLayoutListener {
         }
     }
 
+    // Get all view boundaries/rectangles
     public HashMap<Integer, ViewRectModel> getViewRectangles(){
         return mViewRectangles;
     }

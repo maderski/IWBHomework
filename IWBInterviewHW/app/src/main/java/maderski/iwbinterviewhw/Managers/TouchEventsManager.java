@@ -35,6 +35,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         mPositionCallbacks = positionCallback;
     }
 
+    // Called when a touch event occurs
     @Override
     public void currentTouchEvents(HashMap<Integer, TouchEventModel> touchEvents) {
         for (Object object : touchEvents.entrySet()) {
@@ -54,6 +55,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         searchforChoosenPosition();
     }
 
+    // Adds delay before looking for the position
     private void searchforChoosenPosition(){
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
@@ -68,6 +70,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         handler.postDelayed(runnable, 750);
     }
 
+    // Converts the list with RectangleTouchEvents to a list with Rectangle Positions
     private List<Integer> getPositionsList(List<RectangleTouchEvent> list){
         List<Integer> positionList = new ArrayList<>();
         for(RectangleTouchEvent rectangleTouchEvent : list){
@@ -77,9 +80,11 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         return positionList;
     }
 
+    // Finds the position based on the largest area or largest combined areas if two or more touches
+    // occurred within the same rectangle
     private int findChoosenPosition(HashMap<Integer, RectangleTouchEvent> rectangleTouchEventList){
         HashMap<Integer, Double> areas = new HashMap<>();
-        Log.d(TAG, "CHOOSEN...");
+        Log.d(TAG, "Get AREAS...");
         for(Object object : rectangleTouchEventList.entrySet()){
             Map.Entry pair = (Map.Entry) object;
             RectangleTouchEvent rectangleTouchEvent = (RectangleTouchEvent) pair.getValue();
@@ -94,7 +99,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
             }
             areas.put(position, area);
 
-            Log.d(TAG, "CHOOSEN ID: " + String.valueOf(pointerPositionId)
+            Log.d(TAG, "AREA ID: " + String.valueOf(pointerPositionId)
                     + " P: " + String.valueOf(position)
                     + " A: " + String.valueOf(area));
 
@@ -120,6 +125,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         return maxAreaPosition;
     }
 
+    // Gets touched rectangles
     private List<RectangleTouchEvent> getTouchedRectangles(TouchEventModel touchEvent) {
         List<RectangleTouchEvent> rectangleTouchEventList = new ArrayList<>();
         HashMap<Integer, ViewRectModel> Rectangles = mRectangleHelper.getViewRectangles();
@@ -135,6 +141,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         return rectangleTouchEventList;
     }
 
+    // Checks if a touch event falls inside of a rectangle
     private boolean doesTouchRectangle(TouchEventModel touchEvent, ViewRectModel rectangle){
         float x = touchEvent.getX();
         float y = touchEvent.getY();
@@ -172,10 +179,10 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
             }
         }
 
-//        Log.d(TAG, "IS TOUCHING: " + String.valueOf(isTouching) + " Position: " + String.valueOf(position));
         return isTouching;
     }
 
+    // Associate a rectangle position with a touch event
     private class RectangleTouchEvent {
         private int rectanglePosition;
         private TouchEventModel touchEvent;
