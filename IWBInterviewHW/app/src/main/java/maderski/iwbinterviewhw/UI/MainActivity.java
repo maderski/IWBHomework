@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
                 for (int i=0; i<mItemList.size(); i++) {
                     CardViewColorUtils.setCardColor(MainActivity.this, mRecyclerView, i, R.color.white);
                 }
-                mTouchEventsHelper.removeAllTouchEvents();
+                //mTouchEventsHelper.removeAllTouchEvents();
             }
         });
     }

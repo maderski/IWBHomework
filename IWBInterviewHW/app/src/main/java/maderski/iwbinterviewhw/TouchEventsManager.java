@@ -2,13 +2,12 @@ package maderski.iwbinterviewhw;
 
 import android.os.Handler;
 import android.util.Log;
+import android.util.SparseArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
 import maderski.iwbinterviewhw.Helpers.TouchEventsHelper;
@@ -47,7 +46,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
             int pointerPositionId = (int) pair.getKey();
             TouchEventModel touchEvent = (TouchEventModel) pair.getValue();
 
-            mTouchEventsHelper.addTouchEvent(pointerPositionId, touchEvent);
+            //mTouchEventsHelper.addTouchEvent(pointerPositionId, touchEvent);
             List<RectangleTouchEvent> rectangleTouchEvents = getTouchedRectangles(touchEvent);
             List<Integer> touchingRectangles = getPositionsList(rectangleTouchEvents);
             mPositionCallbacks.pressedPositions(touchingRectangles);
@@ -57,15 +56,18 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
             }
 
         }
-        startSearchforPosition();
+        searchforChoosenPosition();
     }
 
-    private void startSearchforPosition(){
+    private void searchforChoosenPosition(){
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                findChoosenPosition(mRectangleTouchEvents);
+                int choosenPosition = findChoosenPosition(mRectangleTouchEvents);
+                if(choosenPosition != -1) {
+                    mPositionCallbacks.choosenPosition(choosenPosition);
+                }
             }
         };
         handler.postDelayed(runnable, 500);
@@ -80,7 +82,8 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
         return positionList;
     }
 
-    private void findChoosenPosition(HashMap<Integer, RectangleTouchEvent> rectangleTouchEventList){
+    private int findChoosenPosition(HashMap<Integer, RectangleTouchEvent> rectangleTouchEventList){
+        HashMap<Integer, Double> areas = new HashMap<>();
         Log.d(TAG, "CHOOSEN...");
         for(Object object : rectangleTouchEventList.entrySet()){
             Map.Entry pair = (Map.Entry) object;
@@ -88,9 +91,38 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
             int position = rectangleTouchEvent.getRectanglePosition();
             int pointerPositionId = (int) pair.getKey();
             TouchEventModel touchEvent = rectangleTouchEvent.getTouchEvent();
-            Log.d(TAG, "CHOOSEN ID: " + String.valueOf(pointerPositionId) + " P: " + String.valueOf(position) + " A: " + String.valueOf(touchEvent.getArea()));
+            double area = touchEvent.getArea();
+
+            if(areas.containsKey(position)){
+                double storedArea = areas.get(position);
+                area += storedArea;
+            }
+            areas.put(position, area);
+
+            Log.d(TAG, "CHOOSEN ID: " + String.valueOf(pointerPositionId)
+                    + " P: " + String.valueOf(position)
+                    + " A: " + String.valueOf(area));
+
         }
+        int choosenPosition = getLargestAreaPosition(areas);
         mRectangleTouchEvents.clear();
+        return choosenPosition;
+    }
+
+    // Gets the largest area on the list
+    private int getLargestAreaPosition(HashMap<Integer, Double> areas){
+        double maxArea = 0.0;
+        int maxAreaPosition = -1;
+        for (Object object : areas.entrySet()) {
+            Map.Entry pair = (Map.Entry) object;
+
+            double area = (Double)pair.getValue();
+            if(area > maxArea){
+                maxAreaPosition = (int) pair.getKey();
+                maxArea = area;
+            }
+        }
+        return maxAreaPosition;
     }
 
     private List<RectangleTouchEvent> getTouchedRectangles(TouchEventModel touchEvent) {
