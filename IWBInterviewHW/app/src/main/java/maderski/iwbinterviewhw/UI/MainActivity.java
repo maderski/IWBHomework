@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
         });
     }
 
+    // Called after the largest area touched in a rectangle has been determined
     @Override
     public void choosenPosition(int position) {
         mPosition = position;
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeechHelpe
         mTextToSpeechHelper.speakText(itemText);
     }
 
+    // Called when a touch occurs
     @Override
     public void pressedPositions(final List<Integer> positions) {
         runOnUiThread(new Runnable() {
