@@ -65,7 +65,7 @@ public class TouchEventsManager implements CaptureTouchEventsHelper.OnTouchListe
                 }
             }
         };
-        handler.postDelayed(runnable, 500);
+        handler.postDelayed(runnable, 750);
     }
 
     private List<Integer> getPositionsList(List<RectangleTouchEvent> list){
