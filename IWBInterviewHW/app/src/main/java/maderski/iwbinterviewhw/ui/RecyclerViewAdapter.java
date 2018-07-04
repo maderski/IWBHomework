@@ -1,15 +1,13 @@
-package maderski.iwbinterviewhw.UI;
+package maderski.iwbinterviewhw.ui;
 
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-import maderski.iwbinterviewhw.Models.ItemModel;
+import maderski.iwbinterviewhw.models.ItemModel;
 import maderski.iwbinterviewhw.R;
 
 /**

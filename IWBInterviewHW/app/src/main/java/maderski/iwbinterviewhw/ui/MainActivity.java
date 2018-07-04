@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.UI;
+package maderski.iwbinterviewhw.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,14 +17,14 @@ import com.google.android.flexbox.JustifyContent;
 
 import java.util.List;
 
-import maderski.iwbinterviewhw.Helpers.ViewRectHelper;
-import maderski.iwbinterviewhw.Models.ItemModel;
+import maderski.iwbinterviewhw.helpers.ViewRectHelper;
+import maderski.iwbinterviewhw.models.ItemModel;
 import maderski.iwbinterviewhw.R;
-import maderski.iwbinterviewhw.Helpers.TextToSpeechHelper;
-import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
-import maderski.iwbinterviewhw.Managers.TouchEventsManager;
-import maderski.iwbinterviewhw.Utils.CardViewColorUtils;
-import maderski.iwbinterviewhw.Utils.ItemListUtils;
+import maderski.iwbinterviewhw.helpers.TextToSpeechHelper;
+import maderski.iwbinterviewhw.helpers.CaptureTouchEventsHelper;
+import maderski.iwbinterviewhw.managers.TouchEventsManager;
+import maderski.iwbinterviewhw.utils.CardViewColorUtils;
+import maderski.iwbinterviewhw.utils.ItemListUtils;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeechHelper.TextToSpeechCallback,
         TouchEventsManager.PositionCallbacks{

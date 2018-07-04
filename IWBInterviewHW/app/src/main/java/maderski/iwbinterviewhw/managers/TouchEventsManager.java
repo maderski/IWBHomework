@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.Managers;
+package maderski.iwbinterviewhw.managers;
 
 import android.os.Handler;
 import android.util.Log;
@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import maderski.iwbinterviewhw.Helpers.CaptureTouchEventsHelper;
-import maderski.iwbinterviewhw.Helpers.ViewRectHelper;
-import maderski.iwbinterviewhw.Models.TouchEventModel;
-import maderski.iwbinterviewhw.Models.ViewRectModel;
+import maderski.iwbinterviewhw.helpers.CaptureTouchEventsHelper;
+import maderski.iwbinterviewhw.helpers.ViewRectHelper;
+import maderski.iwbinterviewhw.models.TouchEventModel;
+import maderski.iwbinterviewhw.models.ViewRectModel;
 
 /**
  * Created by Jason on 4/8/17.

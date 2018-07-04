@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.Models;
+package maderski.iwbinterviewhw.models;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

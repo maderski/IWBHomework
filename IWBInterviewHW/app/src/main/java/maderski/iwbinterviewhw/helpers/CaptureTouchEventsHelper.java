@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.Helpers;
+package maderski.iwbinterviewhw.helpers;
 
 import android.util.Log;
 import android.view.MotionEvent;
@@ -6,7 +6,7 @@ import android.view.View;
 
 import java.util.HashMap;
 
-import maderski.iwbinterviewhw.Models.TouchEventModel;
+import maderski.iwbinterviewhw.models.TouchEventModel;
 
 /**
  * Created by Jason on 4/6/17.

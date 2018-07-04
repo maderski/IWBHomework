@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.UI;
+package maderski.iwbinterviewhw.ui;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;

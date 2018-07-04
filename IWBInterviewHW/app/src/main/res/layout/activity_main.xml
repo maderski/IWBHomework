@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:clickable="false"
-    tools:context="maderski.iwbinterviewhw.UI.MainActivity">
+    tools:context="maderski.iwbinterviewhw.ui.MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
         android:clickable="false"
-        tools:context=".UI.MainActivity">
+        tools:context=".ui.MainActivity">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

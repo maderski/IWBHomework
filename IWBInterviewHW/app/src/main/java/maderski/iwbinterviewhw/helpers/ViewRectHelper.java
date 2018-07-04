@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.Helpers;
+package maderski.iwbinterviewhw.helpers;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import android.view.ViewTreeObserver;
 import java.util.HashMap;
 import java.util.Map;
 
-import maderski.iwbinterviewhw.Models.ViewRectModel;
+import maderski.iwbinterviewhw.models.ViewRectModel;
 
 /**
  * Created by Jason on 4/7/17.

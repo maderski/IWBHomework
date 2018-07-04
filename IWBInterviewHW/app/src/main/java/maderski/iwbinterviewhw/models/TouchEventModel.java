@@ -1,4 +1,4 @@
-package maderski.iwbinterviewhw.Models;
+package maderski.iwbinterviewhw.models;
 
 /**
  * Created by Jason on 4/1/17.
